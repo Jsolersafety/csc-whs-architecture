@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CSC WHS Document Architecture v4</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0D2B4E;--navy2:#1A3F6F;--blue:#1A5C9A;--teal:#2AAAA0;--teal2:#0F766E;
+  --gold:#C47C00;--goldbg:#FEF3C7;
+  --rose:#BE185D;--rosebg:#FCE7F3;
+  --indigo:#4338CA;--indigobg:#E0E7FF;
+  --green:#166534;--greenbg:#DCFCE7;
+  --purple:#6B21A8;--purplebg:#F3E8FF;
+  --orange:#9A3412;--orangebg:#FFEDD5;
+  --amber:#92400E;--amberbg:#FEF3C7;
+  --red:#991B1B;--redbg:#FEE2E2;
+  --slate:#475569;--light:#F1F5F9;--white:#fff;
+  --border:rgba(13,43,78,.10);--sh:0 2px 10px rgba(13,43,78,.09);--shlg:0 8px 28px rgba(13,43,78,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--light);color:var(--navy);min-height:100vh;overflow-x:hidden;}
+
+/* HEADER */
+header{background:var(--navy);padding:0 20px;height:54px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;box-shadow:0 2px 14px rgba(0,0,0,.28);}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-ico{width:36px;height:36px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.l1{font-family:'Montserrat',sans-serif;font-weight:800;font-size:12px;color:#fff;letter-spacing:.02em;}
+.l2{font-size:9px;color:rgba(255,255,255,.5);font-weight:300;letter-spacing:.12em;text-transform:uppercase;}
+.h-mid{margin-left:auto;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.38);}
+.h-acts{display:flex;gap:6px;margin-left:12px;}
+.hb{padding:6px 12px;border-radius:5px;border:none;cursor:pointer;font-family:'Montserrat',sans-serif;font-weight:600;font-size:10px;letter-spacing:.04em;transition:all .15s;}
+.hb-gold{background:#E8A020;color:var(--navy);}.hb-gold:hover{background:#F5C250;}
+.hb-g{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);}.hb-g:hover{background:rgba(255,255,255,.18);}
+.hb-on{background:rgba(255,255,255,.22);color:#fff;border:1px solid rgba(255,255,255,.4);}
+.save-pill{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:9px;letter-spacing:.04em;transition:all .3s;border:1px solid transparent;}
+.save-pill.idle{background:rgba(255,255,255,.07);color:rgba(255,255,255,.3);border-color:rgba(255,255,255,.08);}
+.save-pill.saving{background:rgba(232,160,32,.18);color:#E8A020;border-color:rgba(232,160,32,.3);}
+.save-pill.saved{background:rgba(22,163,74,.18);color:#4ADE80;border-color:rgba(22,163,74,.3);}
+.save-pill.error{background:rgba(153,27,27,.22);color:#FCA5A5;border-color:rgba(153,27,27,.3);cursor:pointer;}
+.save-pill.notoken{background:rgba(255,200,50,.1);color:rgba(255,200,50,.8);border-color:rgba(255,200,50,.25);cursor:pointer;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin .8s linear infinite;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 54px);}
+
+/* SIDEBAR */
+.sidebar{width:206px;flex-shrink:0;background:var(--navy2);padding:14px 0;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;}
+.sbl{font-size:8.5px;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:0 14px;margin:10px 0 4px;}
+.ni{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:11px;font-family:'Montserrat',sans-serif;font-weight:600;color:rgba(255,255,255,.58);transition:all .13s;margin:1px 7px;text-decoration:none;}
+.ni:hover{background:rgba(255,255,255,.1);color:#fff;}.ni.on{background:rgba(255,255,255,.14);color:#fff;}
+.ni .ico{font-size:13px;width:17px;text-align:center;flex-shrink:0;}
+.nb{margin-left:auto;background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-size:8.5px;padding:1px 5px;border-radius:20px;}
+.ssep{height:1px;background:rgba(255,255,255,.07);margin:7px 12px;}
+
+/* MAIN */
+.main{flex:1;padding:20px 22px 70px;min-width:0;overflow-x:hidden;}
+
+/* TOPBAR */
+.topbar{display:flex;gap:8px;margin-bottom:18px;align-items:center;flex-wrap:wrap;}
+.sw{flex:1;min-width:180px;position:relative;}
+.sw input{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;background:#fff;outline:none;color:var(--navy);transition:border-color .15s;}
+.sw input:focus{border-color:var(--blue);}
+.sw .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--slate);font-size:13px;}
+.flt{padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:11px;background:#fff;color:var(--navy);outline:none;}
+
+/* SECTION */
+.sec{margin-bottom:16px;}
+.sec-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:0 3px;}
+.sbadge{display:flex;align-items:center;gap:6px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;padding:5px 12px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.sline{flex:1;height:1.5px;opacity:.28;}
+.scnt{font-size:10.5px;color:var(--slate);white-space:nowrap;}
+.ref-tag{font-size:9px;color:var(--slate);background:rgba(71,85,105,.1);padding:1px 7px;border-radius:10px;margin-left:6px;font-family:'Montserrat',sans-serif;font-weight:600;}
+
+/* CONNECTOR ARROW */
+.t-arrow{display:flex;justify-content:center;margin:2px 0;color:rgba(13,43,78,.18);font-size:17px;}
+
+/* CARD GRID */
+.cg{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-radius:11px;border:2px dashed transparent;background:rgba(255,255,255,.52);min-height:64px;transition:all .17s;}
+.cg.do{border-color:var(--gold)!important;background:rgba(196,124,0,.05)!important;}
+.cg.center{justify-content:center;}
+
+/* TABBED */
+.tw{background:#fff;border-radius:12px;box-shadow:var(--sh);overflow:hidden;border:1.5px solid var(--border);}
+.tt{display:flex;border-bottom:2px solid var(--light);background:var(--light);overflow-x:auto;}
+.tab{padding:9px 14px;cursor:pointer;white-space:nowrap;font-family:'Montserrat',sans-serif;font-weight:700;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--slate);border-bottom:3px solid transparent;transition:all .13s;display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.tab:hover{color:var(--navy);background:rgba(255,255,255,.6);}
+.tab.on{color:var(--navy);border-bottom-color:var(--blue);background:#fff;}
+.tab .tbc{background:var(--light);color:var(--slate);font-size:8.5px;padding:1px 5px;border-radius:20px;}
+.tab.on .tbc{background:var(--blue);color:#fff;}
+.tp{display:none;padding:12px;}.tp.on{display:block;}
+
+/* DOC CARD */
+.dc{background:#fff;border-radius:9px;padding:11px 12px;min-width:180px;max-width:260px;flex:1 1 180px;cursor:grab;border:1.5px solid var(--border);box-shadow:0 1px 5px rgba(13,43,78,.06);transition:all .17s;position:relative;user-select:none;}
+.dc:hover{box-shadow:0 4px 16px rgba(13,43,78,.13);transform:translateY(-2px);}
+.dc.dragging{opacity:.3;cursor:grabbing;transform:scale(.95);}
+.dc.hidden{display:none!important;}
+.stripe{height:3px;border-radius:2px;margin-bottom:7px;}
+.icon-row{display:flex;align-items:center;gap:5px;margin-bottom:3px;}
+.tyico{font-size:14px;}.tylbl{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--slate);opacity:.65;}
+.ctitle{font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;color:var(--navy);line-height:1.4;margin-bottom:5px;outline:none;border:none;background:transparent;width:100%;cursor:text;}
+.ctitle:focus{background:var(--light);border-radius:3px;padding:2px 4px;}
+.aud-row{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px;}
+.ap{font-size:8.5px;padding:2px 7px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:700;}
+.ap-all{background:#DBEAFE;color:#1E40AF;}.ap-dept{background:var(--purplebg);color:var(--purple);}
+.lnks{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px;}
+.lp{display:flex;align-items:center;gap:2px;font-size:8.5px;background:#EFF6FF;color:var(--blue);border-radius:4px;padding:2px 6px;}
+.lp span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;}
+.lpx{cursor:pointer;color:var(--red);font-weight:700;font-size:10px;flex-shrink:0;}
+.cfoot{display:flex;align-items:center;justify-content:space-between;gap:4px;}
+.cdno{font-size:9px;color:var(--slate);opacity:.6;}
+.cst{font-size:8.5px;padding:2px 7px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:600;white-space:nowrap;}
+.st-d{background:#FEF3C7;color:#92400E;}.st-r{background:#DBEAFE;color:#1E40AF;}.st-a{background:#D1FAE5;color:#065F46;}.st-p{background:#FCE7F3;color:#9D174D;}.st-ac{background:#D1FAE5;color:#065F46;}
+.cdate-row{display:flex;gap:6px;margin-top:5px;padding-top:5px;border-top:1px solid var(--light);flex-wrap:wrap;}
+.cdate{display:flex;align-items:center;gap:3px;font-size:8.5px;color:var(--slate);cursor:pointer;border-radius:4px;padding:2px 5px;transition:background .13s;border:1px solid transparent;}
+.cdate:hover{background:var(--light);border-color:var(--border);}
+.cdate .dlbl{font-family:'Montserrat',sans-serif;font-weight:700;font-size:7.5px;text-transform:uppercase;letter-spacing:.06em;opacity:.55;}
+.cdate .dval{font-weight:600;}
+.cdate.overdue .dval{color:var(--red);font-weight:700;}
+.cdate.due-soon .dval{color:#D97706;font-weight:700;}
+.cacts{position:absolute;top:5px;right:5px;display:flex;gap:2px;opacity:0;transition:opacity .13s;}
+.dc:hover .cacts{opacity:1;}
+.ca{width:20px;height:20px;border-radius:4px;border:none;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;transition:background .13s;background:var(--light);color:var(--slate);}
+.ca:hover{background:var(--navy);color:#fff;}.ca.del:hover{background:var(--red);color:#fff;}.ca.lnk:hover{background:var(--blue);color:#fff;}.ca.aud:hover{background:var(--purple);color:#fff;}
+.add-card{border:2px dashed var(--border);border-radius:9px;min-width:110px;max-width:140px;flex:0 0 110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;padding:11px 8px;color:var(--slate);font-size:10px;font-family:'Montserrat',sans-serif;font-weight:600;transition:all .17s;background:transparent;}
+.add-card:hover{border-color:var(--blue);color:var(--blue);background:rgba(26,92,154,.04);}
+.plus{font-size:17px;line-height:1;}
+
+/* MODALS */
+.overlay{position:fixed;inset:0;background:rgba(13,43,78,.52);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.modal{background:#fff;border-radius:13px;padding:24px;width:450px;max-width:95vw;box-shadow:0 20px 60px rgba(13,43,78,.28);transform:translateY(12px);transition:transform .2s;max-height:90vh;overflow-y:auto;}
+.overlay.open .modal{transform:translateY(0);}
+.modal h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:13px;color:var(--navy);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--light);}
+.fg{margin-bottom:12px;}
+.fg label{display:block;font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.fg input,.fg select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-family:'Source Sans 3',sans-serif;font-size:13px;color:var(--navy);outline:none;transition:border-color .15s;}
+.fg input:focus,.fg select:focus{border-color:var(--blue);}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.mb-c{padding:8px 15px;border-radius:6px;border:none;cursor:pointer;background:var(--light);color:var(--slate);font-family:'Montserrat',sans-serif;font-weight:600;font-size:11px;}
+.mb-ok{padding:8px 15px;border-radius:6px;border:none;cursor:pointer;background:var(--navy);color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:11px;}
+.mb-ok:hover{background:var(--blue);}
+.dg{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.dchip{padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);cursor:pointer;font-size:10px;font-family:'Montserrat',sans-serif;font-weight:600;color:var(--slate);transition:all .13s;}
+.dchip.sel{background:var(--purple);color:#fff;border-color:var(--purple);}
+.proc-list{max-height:240px;overflow-y:auto;border:1.5px solid var(--border);border-radius:7px;}
+.pi{padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--light);display:flex;align-items:center;gap:8px;transition:background .12s;font-size:11px;}
+.pi:last-child{border-bottom:none;}.pi:hover{background:var(--light);}
+.pi input[type=checkbox]{accent-color:var(--blue);width:13px;height:13px;flex-shrink:0;}
+.pi .pt{flex:1;line-height:1.35;}
+.pi .ptier{font-size:8.5px;color:var(--slate);font-family:'Montserrat',sans-serif;background:var(--light);padding:2px 5px;border-radius:4px;white-space:nowrap;}
+
+/* CONNECTOR VIEW */
+.conn-wrap{background:#fff;border-radius:13px;box-shadow:var(--shlg);border:1.5px solid var(--border);overflow:hidden;}
+.conn-bar{padding:12px 16px;border-bottom:2px solid var(--light);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.conn-bar h3{font-family:'Montserrat',sans-serif;font-weight:800;font-size:12px;color:var(--navy);}
+.cfl{padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:11px;background:#fff;color:var(--navy);outline:none;}
+.conn-hint{font-size:10px;color:var(--slate);margin-left:auto;}
+.conn-svg-wrap{overflow:auto;padding:18px;}
+#csvg{display:block;}
+.cnode{cursor:pointer;}.cnode rect{transition:filter .14s;}
+.cnode:hover rect{filter:brightness(1.08);}
+
+/* SECTION COLOUR PAIRS  [badge-bg, badge-color, line-color, card-top, stripe-color] */
+.s-pol  .sbadge{background:var(--goldbg);color:var(--gold);}      .s-pol .sline{background:var(--gold);}      .s-pol .dc{border-top:3px solid var(--gold);}      .s-pol  .stripe{background:var(--gold);}
+.s-adm  .sbadge{background:var(--rosebg);color:var(--rose);}      .s-adm .sline{background:var(--rose);}      .s-adm .dc{border-top:3px solid var(--rose);}      .s-adm  .stripe{background:var(--rose);}
+.s-pln  .sbadge{background:var(--indigobg);color:var(--indigo);}  .s-pln .sline{background:var(--indigo);}  .s-pln .dc{border-top:3px solid var(--indigo);}  .s-pln  .stripe{background:var(--indigo);}
+.s-mgm  .sbadge{background:rgba(13,43,78,.1);color:var(--navy);}  .s-mgm .sline{background:var(--navy);}    .s-mgm .dc{border-top:3px solid var(--navy);}    .s-mgm  .stripe{background:var(--navy);}
+.s-ops  .sbadge{background:#DBEAFE;color:var(--blue);}            .s-ops .sline{background:var(--blue);}    .s-ops .dc{border-top:3px solid var(--blue);}    .s-ops  .stripe{background:var(--blue);}
+.s-emg  .sbadge{background:var(--redbg);color:var(--red);}        .s-emg .sline{background:var(--red);}     .s-emg .dc{border-top:3px solid var(--red);}     .s-emg  .stripe{background:var(--red);}
+.s-opm  .sbadge{background:var(--amberbg);color:var(--amber);}    .s-opm .sline{background:#D97706;}        .s-opm .dc{border-top:3px solid #D97706;}         .s-opm  .stripe{background:#D97706;}
+.s-t4   .sbadge{background:#CCFBF1;color:var(--teal2);}           .s-t4  .sline{background:var(--teal);}
+.s-trn  .sbadge{background:var(--purplebg);color:var(--purple);}  .s-trn .sline{background:var(--purple);}  .s-trn .dc{border-top:3px solid var(--purple);}  .s-trn  .stripe{background:var(--purple);}
+.s-tbx  .sbadge{background:var(--indigobg);color:var(--indigo);}  .s-tbx .sline{background:var(--indigo);}  .s-tbx .dc{border-top:3px solid var(--indigo);}  .s-tbx  .stripe{background:var(--indigo);}
+.s-gd   .sbadge{background:var(--orangebg);color:var(--orange);}  .s-gd  .sline{background:#EA580C;}        .s-gd  .dc{border-top:3px solid #EA580C;}         .s-gd   .stripe{background:#EA580C;}
+.s-rec  .sbadge{background:#F1F5F9;color:var(--slate);}           .s-rec .sline{background:var(--slate);}   .s-rec .dc{border-top:3px solid var(--slate);}   .s-rec  .stripe{background:var(--slate);}
+.s-rpt  .sbadge{background:var(--greenbg);color:var(--green);}    .s-rpt .sline{background:#16A34A;}        .s-rpt .dc{border-top:3px solid #16A34A;}         .s-rpt  .stripe{background:#16A34A;}
+
+/* T4 tab stripe colours */
+.stripe-swp{background:#7C3AED;}.stripe-swms{background:#C05621;}.stripe-sop{background:var(--teal);}
+.stripe-forms{background:var(--blue);}.stripe-reg{background:#16A34A;}.stripe-tmpl{background:var(--slate);}
+.stripe-opm{background:#D97706;}
+
+@media(max-width:760px){.sidebar{display:none;}.main{padding:14px;}}
+@media print{.sidebar,.h-acts,.topbar,.cacts,.add-card{display:none!important;}.main{padding:0;}}
+[data-tip]{position:relative;}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100%+5px);left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:4px 8px;border-radius:5px;font-size:9px;white-space:nowrap;pointer-events:none;z-index:400;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <div class="logo-ico">⚓</div>
+    <div><div class="l1">Cook Shire Council</div><div class="l2">Work Health &amp; Safety</div></div>
+  </div>
+  <div class="h-mid">WHS Document Architecture — WHSMS Manual v6 2025</div>
+  <div class="h-acts">
+    <button class="hb hb-on" id="btn-arch" onclick="sv('arch')">📁 Architecture</button>
+    <button class="hb hb-g"  id="btn-conn" onclick="sv('conn')">🔗 Link Map</button>
+    <span class="save-pill idle" id="save-pill">☁️ Not connected</span>
+    <button class="hb hb-g" onclick="window.print()">🖨</button>
+    <button class="hb hb-g" onclick="exportJSON()">⬇ Export</button>
+    <button class="hb hb-g" onclick="openSettings()" data-tip="GitHub Settings">⚙️</button>
+    <button class="hb hb-gold" onclick="openAdd(null)">＋ Add</button>
+  </div>
+</header>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sbl">Manual Structure</div>
+  <a class="ni on" href="#s-pol"><span class="ico">📋</span>WHS Policy<span class="nb" id="nb-pol">0</span></a>
+  <a class="ni" href="#s-adm"><span class="ico">📜</span>Administrative Policies<span class="nb" id="nb-adm">0</span></a>
+  <a class="ni" href="#s-pln"><span class="ico">🗺️</span>Management Plans<span class="nb" id="nb-pln">0</span></a>
+  <a class="ni" href="#s-mgm"><span class="ico">📂</span>Mgmt Procedures<span class="nb" id="nb-mgm">0</span></a>
+  <a class="ni" href="#s-ops"><span class="ico">⚙️</span>Ops Procedures<span class="nb" id="nb-ops">0</span></a>
+  <a class="ni" href="#s-emg"><span class="ico">🚨</span>Emergency Mgmt<span class="nb" id="nb-emg">0</span></a>
+  <a class="ni" href="#s-opm"><span class="ico">🏗️</span>Operations Mgmt<span class="nb" id="nb-opm">0</span></a>
+  <div class="ssep"></div>
+  <div class="sbl">Tier 4 Supporting Docs</div>
+  <a class="ni" href="#s-t4" onclick="showTab('swp')"><span class="ico">🛡️</span>Safe Work Procs</a>
+  <a class="ni" href="#s-t4" onclick="showTab('swms')"><span class="ico">🦺</span>SWMS</a>
+  <a class="ni" href="#s-t4" onclick="showTab('sop')"><span class="ico">📝</span>SOPs</a>
+  <a class="ni" href="#s-t4" onclick="showTab('forms')"><span class="ico">📄</span>Forms</a>
+  <a class="ni" href="#s-t4" onclick="showTab('reg')"><span class="ico">📊</span>Registers</a>
+  <a class="ni" href="#s-t4" onclick="showTab('tmpl')"><span class="ico">🖨️</span>Templates</a>
+  <div class="ssep"></div>
+  <div class="sbl">Training &amp; Engagement</div>
+  <a class="ni" href="#s-trn"><span class="ico">🎓</span>Training Material<span class="nb" id="nb-trn">0</span></a>
+  <a class="ni" href="#s-tbx"><span class="ico">🔧</span>Toolbox Talks<span class="nb" id="nb-tbx">0</span></a>
+  <div class="ssep"></div>
+  <div class="sbl">Reference</div>
+  <a class="ni" href="#s-gd"><span class="ico">📚</span>Guides &amp; Manuals<span class="nb" id="nb-gd">0</span></a>
+  <div class="ssep"></div>
+  <div class="sbl">Compliance</div>
+  <a class="ni" href="#s-rec"><span class="ico">🗄️</span>Records<span class="nb" id="nb-rec">0</span></a>
+  <a class="ni" href="#s-rpt"><span class="ico">📈</span>Reports<span class="nb" id="nb-rpt">0</span></a>
+  <div class="ssep"></div>
+  <a class="ni" onclick="sv('conn')"><span class="ico">🔗</span>Link Map</a>
+</nav>
+
+<!-- ARCHITECTURE VIEW -->
+<main class="main" id="v-arch">
+  <div class="topbar">
+    <div class="sw"><span class="si">🔍</span><input type="text" placeholder="Search all documents…" oninput="fc(this.value)"></div>
+    <select class="flt" onchange="fst(this.value)"><option value="">All Statuses</option><option>Draft</option><option>In Review</option><option>Approved</option><option>Pending</option><option>Active</option></select>
+    <select class="flt" onchange="fau(this.value)"><option value="">All Audiences</option><option value="all">All Staff</option><option value="dept">Dept Specific</option></select>
+    <select class="flt" id="df" onchange="fdp(this.value)"><option value="">All Departments</option></select>
+  </div>
+
+  <!-- S1: WHS POLICY (Manual s6) -->
+  <div class="sec s-pol" id="s-pol">
+    <div class="sec-h"><div class="sbadge">📋 WHS Policy Statement<span class="ref-tag">Manual §6</span></div><div class="sline"></div><div class="scnt" id="cnt-pol"></div></div>
+    <div class="cg center" id="grid-pol" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'pol')"></div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S2: ADMINISTRATIVE POLICIES -->
+  <div class="sec s-adm" id="s-adm">
+    <div class="sec-h"><div class="sbadge">📜 Administrative Policies<span class="ref-tag">Manual §15 §17</span></div><div class="sline"></div><div class="scnt" id="cnt-adm"></div></div>
+    <div class="cg" id="grid-adm" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'adm')"></div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S3: MANAGEMENT PLANS -->
+  <div class="sec s-pln" id="s-pln">
+    <div class="sec-h"><div class="sbadge">🗺️ Management Plans<span class="ref-tag">Manual §3 §8 §9</span></div><div class="sline"></div><div class="scnt" id="cnt-pln"></div></div>
+    <div class="cg" id="grid-pln" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'pln')"></div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S4: MANAGEMENT PROCEDURES (Manual s5,7,8,9,10,11,12,29) -->
+  <div class="sec s-mgm" id="s-mgm">
+    <div class="sec-h"><div class="sbadge">📂 Management Procedures<span class="ref-tag">Manual §5–12 §29</span></div><div class="sline"></div><div class="scnt" id="cnt-mgm"></div></div>
+    <div class="cg" id="grid-mgm" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'mgm')"></div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S5: OPERATIONAL PROCEDURES (Manual s13–18,21,24,25,26,27,28,30,31) -->
+  <div class="sec s-ops" id="s-ops">
+    <div class="sec-h"><div class="sbadge">⚙️ Operational Procedures<span class="ref-tag">Manual §13–18 §21 §24–28</span></div><div class="sline"></div><div class="scnt" id="cnt-ops"></div></div>
+    <div class="cg" id="grid-ops" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'ops')"></div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S6: EMERGENCY MANAGEMENT (Manual s22,23) -->
+  <div class="sec s-emg" id="s-emg">
+    <div class="sec-h"><div class="sbadge">🚨 Emergency Management<span class="ref-tag">Manual §22–23</span></div><div class="sline"></div><div class="scnt" id="cnt-emg"></div></div>
+    <div class="cg" id="grid-emg" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'emg')"></div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S7: OPERATIONS MANAGEMENT GUIDELINES (Manual s19–20, tabbed by topic) -->
+  <div class="sec s-opm" id="s-opm">
+    <div class="sec-h"><div class="sbadge">🏗️ Operations Management Guidelines<span class="ref-tag">Manual §19–20</span></div><div class="sline"></div><div class="scnt" id="cnt-opm"></div></div>
+    <div class="tw">
+      <div class="tt">
+        <div class="tab on" onclick="showTab('opm-fac')" id="tab-opm-fac">🏠 Facilities <span class="tbc" id="tbc-opm-fac">0</span></div>
+        <div class="tab" onclick="showTab('opm-constr')" id="tab-opm-constr">🏗️ Construction <span class="tbc" id="tbc-opm-constr">0</span></div>
+        <div class="tab" onclick="showTab('opm-chem')" id="tab-opm-chem">⚗️ Hazardous Substances <span class="tbc" id="tbc-opm-chem">0</span></div>
+        <div class="tab" onclick="showTab('opm-elec')" id="tab-opm-elec">⚡ Electrical <span class="tbc" id="tbc-opm-elec">0</span></div>
+        <div class="tab" onclick="showTab('opm-env')" id="tab-opm-env">🌿 Environmental <span class="tbc" id="tbc-opm-env">0</span></div>
+        <div class="tab" onclick="showTab('opm-ppl')" id="tab-opm-ppl">👷 People &amp; Wellbeing <span class="tbc" id="tbc-opm-ppl">0</span></div>
+        <div class="tab" onclick="showTab('opm-plant')" id="tab-opm-plant">🔩 Plant &amp; Equipment <span class="tbc" id="tbc-opm-plant">0</span></div>
+        <div class="tab" onclick="showTab('opm-site')" id="tab-opm-site">📍 Site Operations <span class="tbc" id="tbc-opm-site">0</span></div>
+      </div>
+      <div class="tp on" id="panel-opm-fac"><div class="cg" id="grid-opm-fac" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-fac')"></div></div>
+      <div class="tp" id="panel-opm-constr"><div class="cg" id="grid-opm-constr" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-constr')"></div></div>
+      <div class="tp" id="panel-opm-chem"><div class="cg" id="grid-opm-chem" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-chem')"></div></div>
+      <div class="tp" id="panel-opm-elec"><div class="cg" id="grid-opm-elec" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-elec')"></div></div>
+      <div class="tp" id="panel-opm-env"><div class="cg" id="grid-opm-env" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-env')"></div></div>
+      <div class="tp" id="panel-opm-ppl"><div class="cg" id="grid-opm-ppl" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-ppl')"></div></div>
+      <div class="tp" id="panel-opm-plant"><div class="cg" id="grid-opm-plant" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-plant')"></div></div>
+      <div class="tp" id="panel-opm-site"><div class="cg" id="grid-opm-site" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'opm-site')"></div></div>
+    </div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S8: TIER 4 SUPPORTING DOCS (tabbed) -->
+  <div class="sec s-t4" id="s-t4">
+    <div class="sec-h"><div class="sbadge">📁 Tier 4 — Supporting Documents</div><div class="sline"></div><div class="scnt" id="cnt-t4"></div></div>
+    <div class="tw">
+      <div class="tt">
+        <div class="tab on" onclick="showTab('swp')" id="tab-swp">🛡️ Safe Work Procs <span class="tbc" id="tbc-swp">0</span></div>
+        <div class="tab" onclick="showTab('swms')" id="tab-swms">🦺 SWMS <span class="tbc" id="tbc-swms">0</span></div>
+        <div class="tab" onclick="showTab('sop')" id="tab-sop">📝 SOPs <span class="tbc" id="tbc-sop">0</span></div>
+        <div class="tab" onclick="showTab('forms')" id="tab-forms">📄 Forms <span class="tbc" id="tbc-forms">0</span></div>
+        <div class="tab" onclick="showTab('reg')" id="tab-reg">📊 Registers <span class="tbc" id="tbc-reg">0</span></div>
+        <div class="tab" onclick="showTab('tmpl')" id="tab-tmpl">🖨️ Templates <span class="tbc" id="tbc-tmpl">0</span></div>
+      </div>
+      <div class="tp on" id="panel-swp"><div class="cg" id="grid-swp" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'swp')"></div></div>
+      <div class="tp" id="panel-swms"><div class="cg" id="grid-swms" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'swms')"></div></div>
+      <div class="tp" id="panel-sop"><div class="cg" id="grid-sop" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'sop')"></div></div>
+      <div class="tp" id="panel-forms"><div class="cg" id="grid-forms" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'forms')"></div></div>
+      <div class="tp" id="panel-reg"><div class="cg" id="grid-reg" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'reg')"></div></div>
+      <div class="tp" id="panel-tmpl"><div class="cg" id="grid-tmpl" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'tmpl')"></div></div>
+    </div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S9 TRAINING -->
+  <div class="sec s-trn" id="s-trn">
+    <div class="sec-h"><div class="sbadge">🎓 Training Material<span class="ref-tag">Manual §18</span></div><div class="sline"></div><div class="scnt" id="cnt-trn"></div></div>
+    <div class="cg" id="grid-trn" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'trn')"></div>
+  </div>
+
+  <!-- S10 TOOLBOX -->
+  <div class="sec s-tbx" id="s-tbx" style="margin-top:14px;">
+    <div class="sec-h"><div class="sbadge">🔧 Toolbox Talks</div><div class="sline"></div><div class="scnt" id="cnt-tbx"></div></div>
+    <div class="cg" id="grid-tbx" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'tbx')"></div>
+  </div>
+  <div class="t-arrow" style="margin-top:14px;">▾</div>
+
+  <!-- S11 GUIDES -->
+  <div class="sec s-gd" id="s-gd">
+    <div class="sec-h"><div class="sbadge">📚 WHS Guides &amp; Asset Manuals<span class="ref-tag">Manual §31</span></div><div class="sline"></div><div class="scnt" id="cnt-gd"></div></div>
+    <div class="cg" id="grid-gd" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'gd')"></div>
+  </div>
+  <div class="t-arrow">▾</div>
+
+  <!-- S12 RECORDS -->
+  <div class="sec s-rec" id="s-rec">
+    <div class="sec-h"><div class="sbadge">🗄️ Records<span class="ref-tag">Manual §30</span></div><div class="sline"></div><div class="scnt" id="cnt-rec"></div></div>
+    <div class="cg" id="grid-rec" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'rec')"></div>
+  </div>
+
+  <!-- S13 REPORTS -->
+  <div class="sec s-rpt" id="s-rpt" style="margin-top:14px;">
+    <div class="sec-h"><div class="sbadge">📈 Reports<span class="ref-tag">Manual §25 §29</span></div><div class="sline"></div><div class="scnt" id="cnt-rpt"></div></div>
+    <div class="cg" id="grid-rpt" ondragover="od(event,this)" ondragleave="ol(event,this)" ondrop="dp(event,this,'rpt')"></div>
+  </div>
+</main>
+
+<!-- CONNECTOR VIEW -->
+<main class="main" id="v-conn" style="display:none;">
+  <div class="conn-wrap">
+    <div class="conn-bar">
+      <h3>🔗 Procedure ↔ Document Link Map</h3>
+      <select class="cfl" id="cpf" onchange="drawConn()"><option value="">All Procedures</option></select>
+      <select class="cfl" id="cdf" onchange="drawConn()"><option value="">All Departments</option></select>
+      <span class="conn-hint">Click a node to highlight its connections</span>
+    </div>
+    <div class="conn-svg-wrap"><svg id="csvg" width="900" height="400"></svg></div>
+  </div>
+</main>
+</div>
+
+<!-- ADD MODAL -->
+<div class="overlay" id="m-add" onclick="cov(event,'m-add')">
+  <div class="modal">
+    <h3>➕ Add Document</h3>
+    <div class="fg"><label>Title *</label><input type="text" id="a-t" placeholder="Document title…"></div>
+    <div class="fg"><label>Section</label>
+      <select id="a-s">
+        <option value="pol">WHS Policy Statement</option>
+        <option value="adm">Administrative Policy</option>
+        <option value="pln">Management Plan</option>
+        <option value="mgm">Management Procedure</option>
+        <option value="ops">Operational Procedure</option>
+        <option value="emg">Emergency Management</option>
+        <option value="opm-fac">Ops Mgmt – Facilities</option>
+        <option value="opm-constr">Ops Mgmt – Construction</option>
+        <option value="opm-chem">Ops Mgmt – Hazardous Substances</option>
+        <option value="opm-elec">Ops Mgmt – Electrical</option>
+        <option value="opm-env">Ops Mgmt – Environmental</option>
+        <option value="opm-ppl">Ops Mgmt – People &amp; Wellbeing</option>
+        <option value="opm-plant">Ops Mgmt – Plant &amp; Equipment</option>
+        <option value="opm-site">Ops Mgmt – Site Operations</option>
+        <option value="swp">Safe Work Procedure</option>
+        <option value="swms">SWMS</option>
+        <option value="sop">SOP</option>
+        <option value="forms">Form</option>
+        <option value="reg">Register</option>
+        <option value="tmpl">Template</option>
+        <option value="trn">Training Material</option>
+        <option value="tbx">Toolbox Talk</option>
+        <option value="gd">Guide / Asset Manual</option>
+        <option value="rec">Record</option>
+        <option value="rpt">Report</option>
+      </select>
+    </div>
+    <div class="fg"><label>Type</label>
+      <select id="a-ty"><option>Policy</option><option>Administrative Policy</option><option>Procedure</option><option>Management Plan</option><option>Safe Work Procedure</option><option>SWMS</option><option>SOP</option><option>Form</option><option>Register</option><option>Template</option><option>Emergency Plan</option><option>Guideline</option><option>Training Module</option><option>Toolbox Talk</option><option>Guide</option><option>Asset Manual</option><option>Record</option><option>Report</option><option>Tool</option></select>
+    </div>
+    <div class="fg"><label>Status</label>
+      <select id="a-st"><option>Draft</option><option>In Review</option><option>Approved</option><option>Pending</option><option>Active</option></select>
+    </div>
+    <div class="fg"><label>Audience</label>
+      <select id="a-au" onchange="tdp('a-da',this.value)"><option value="all">All Staff</option><option value="dept">Department Specific</option></select>
+    </div>
+    <div id="a-da" style="display:none;" class="fg"><label>Departments</label><div class="dg" id="a-dg"></div></div>
+    <div class="fg"><label>Document No.</label><input type="text" id="a-dn" placeholder="e.g. D25/1234"></div>
+    <div style="display:flex;gap:10px;">
+      <div class="fg" style="flex:1"><label>Last Updated</label><input type="date" id="a-lu"></div>
+      <div class="fg" style="flex:1"><label>Next Review Date</label><input type="date" id="a-nr"></div>
+    </div>
+    <div class="mbtns"><button class="mb-c" onclick="closeM('m-add')">Cancel</button><button class="mb-ok" onclick="addDoc()">Add</button></div>
+  </div>
+</div>
+
+<!-- LINK MODAL -->
+<div class="overlay" id="m-lnk" onclick="cov(event,'m-lnk')">
+  <div class="modal">
+    <h3>🔗 Link to Procedure</h3>
+    <div class="fg"><input type="text" id="ls" placeholder="Filter…" oninput="bpl(this.value)"></div>
+    <div class="proc-list" id="pl"></div>
+    <div class="mbtns"><button class="mb-c" onclick="closeM('m-lnk')">Cancel</button><button class="mb-ok" onclick="applyLnk()">Save</button></div>
+  </div>
+</div>
+
+<!-- DATE MODAL -->
+<div class="overlay" id="m-dt" onclick="cov(event,'m-dt')">
+  <div class="modal" style="width:340px;">
+    <h3>📅 Document Dates</h3>
+    <div id="m-dt-title" style="font-size:11px;color:var(--slate);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--light);font-family:'Montserrat',sans-serif;font-weight:600;"></div>
+    <div style="display:flex;gap:10px;">
+      <div class="fg" style="flex:1"><label>Last Updated</label><input type="date" id="dt-lu"></div>
+      <div class="fg" style="flex:1"><label>Next Review Date</label><input type="date" id="dt-nr"></div>
+    </div>
+    <div id="dt-hint" style="font-size:9.5px;color:var(--slate);margin-top:2px;margin-bottom:4px;"></div>
+    <div class="mbtns"><button class="mb-c" onclick="closeM('m-dt')">Cancel</button><button class="mb-ok" onclick="applyDt()">Save</button></div>
+  </div>
+</div>
+
+<!-- AUDIENCE MODAL -->
+<div class="overlay" id="m-aud" onclick="cov(event,'m-aud')">
+  <div class="modal">
+    <h3>👥 Set Audience</h3>
+    <div class="fg"><label>Audience</label>
+      <select id="au-t" onchange="tdp('au-da',this.value)"><option value="all">All Staff</option><option value="dept">Department Specific</option></select>
+    </div>
+    <div id="au-da" style="display:none;" class="fg"><label>Departments</label><div class="dg" id="au-dg"></div></div>
+    <div class="mbtns"><button class="mb-c" onclick="closeM('m-aud')">Cancel</button><button class="mb-ok" onclick="applyAud()">Save</button></div>
+  </div>
+</div>
+
+<!-- GITHUB SETTINGS MODAL -->
+<div class="overlay" id="m-gh" onclick="cov(event,'m-gh')">
+  <div class="modal" style="width:480px;">
+    <h3>⚙️ GitHub Database Settings</h3>
+    <p style="font-size:11px;color:var(--slate);margin-bottom:16px;line-height:1.6;">Your data is saved to <strong>data.json</strong> in your GitHub repo. Enter your Personal Access Token to enable auto-save. The token is stored only in your browser.</p>
+    <div style="background:var(--light);border-radius:8px;padding:12px;margin-bottom:14px;font-size:10.5px;color:var(--slate);line-height:1.7;">
+      <strong style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;">Repo:</strong> github.com/Jsolersafety/csc-whs-architecture<br>
+      <strong style="font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:.06em;text-transform:uppercase;">File:</strong> data.json (auto-created on first save)
+    </div>
+    <div class="fg">
+      <label>Personal Access Token (PAT) 🔑</label>
+      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      <div style="font-size:9px;color:var(--slate);margin-top:4px;">GitHub → Settings → Developer Settings → Personal Access Tokens (Classic) → Generate new token → tick <strong>repo</strong> scope</div>
+    </div>
+    <div id="gh-status" style="font-size:11px;min-height:20px;margin-bottom:8px;"></div>
+    <div class="mbtns">
+      <button class="mb-c" onclick="clearToken()">🗑 Clear Token</button>
+      <button class="mb-c" onclick="closeM('m-gh')">Cancel</button>
+      <button class="mb-ok" onclick="saveToken()">✓ Connect &amp; Test</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEPTS=['Executive','Infrastructure','People & Performance','Environmental Health','Development & Planning','Works','Parks & Gardens','Aquatic Centre','Botanic Gardens','Records','Finance','IT'];
+const SICN={'Policy':'📋','Administrative Policy':'📜','Procedure':'📁','Management Plan':'🗺️','Safe Work Procedure':'🛡️','SWMS':'🦺','SOP':'📝','Form':'📄','Register':'📊','Template':'🖨️','Emergency Plan':'🚨','Guideline':'📖','Training Module':'🎓','Toolbox Talk':'🔧','Guide':'📚','Asset Manual':'🔩','Record':'🗂️','Report':'📈','Tool':'🔧'};
+const STCL={Draft:'st-d','In Review':'st-r',Approved:'st-a',Pending:'st-p',Active:'st-ac'};
+const STCY=['Draft','In Review','Approved','Pending','Active'];
+const SECS=['pol','adm','pln','mgm','ops','emg','opm-fac','opm-constr','opm-chem','opm-elec','opm-env','opm-ppl','opm-plant','opm-site','swp','swms','sop','forms','reg','tmpl','trn','tbx','gd','rec','rpt'];
+const NBMAP={pol:'nb-pol',adm:'nb-adm',pln:'nb-pln',mgm:'nb-mgm',ops:'nb-ops',emg:'nb-emg',trn:'nb-trn',tbx:'nb-tbx',gd:'nb-gd',rec:'nb-rec',rpt:'nb-rpt'};
+const CNTMAP={pol:'cnt-pol',adm:'cnt-adm',pln:'cnt-pln',mgm:'cnt-mgm',ops:'cnt-ops',emg:'cnt-emg',trn:'cnt-trn',tbx:'cnt-tbx',gd:'cnt-gd',rec:'cnt-rec',rpt:'cnt-rpt'};
+const SC={pol:'#C47C00',adm:'#BE185D',pln:'#4338CA',mgm:'#0D2B4E',ops:'#1A5C9A',emg:'#991B1B','opm-fac':'#D97706','opm-constr':'#D97706','opm-chem':'#D97706','opm-elec':'#D97706','opm-env':'#D97706','opm-ppl':'#D97706','opm-plant':'#D97706','opm-site':'#D97706',swp:'#7C3AED',swms:'#C05621',sop:'#2AAAA0',forms:'#1A5C9A',reg:'#166534',tmpl:'#475569',trn:'#6B21A8',tbx:'#4338CA',gd:'#9A3412',rec:'#475569',rpt:'#166534'};
+const T4TABS=['swp','swms','sop','forms','reg','tmpl'];
+const OPMTABS=['opm-fac','opm-constr','opm-chem','opm-elec','opm-env','opm-ppl','opm-plant','opm-site'];
+let DOCS=[],dragId=null,lnkTgt=null,audTgt=null,addTgt=null;
+let fText='',fSt='',fAu='',fDp='',curView='arch';
+
+function uid(){return 'D'+Math.random().toString(36).substr(2,8);}
+function d(sec,title,type,status,docNo='',audience='all',depts=[],lastUpdated='',nextReview=''){return{id:uid(),sec,title,type,status,docNo,links:[],audience,depts,lastUpdated,nextReview};}
+
+function seed(){
+  DOCS=[
+    // WHS Policy
+    d('pol','WHS Policy Statement','Policy','Pending'),
+
+    // Administrative Policies
+    d('adm','Alcohol and Other Drugs Policy','Administrative Policy','Draft','','all'),
+    d('adm','Managing Unreasonable Customer Conduct Policy','Administrative Policy','Draft','','all'),
+    d('adm','Working with Children and Young People Policy','Administrative Policy','Draft','','all'),
+    d('adm','Psychosocial Safety Policy','Administrative Policy','Draft','','all'),
+    d('adm','Fatigue Management Policy','Administrative Policy','Draft','','all'),
+
+    // Management Plans
+    d('pln','WHS Management System Manual v6 2025','Management Plan','Active','D25/5352','all'),
+    d('pln','WHS Safety Objectives, Targets and Plans','Management Plan','Draft','','all'),
+    d('pln','WHS Infrastructure and Supports Plan','Management Plan','Draft','','all'),
+    d('pln','Environmental Management Plan','Management Plan','Draft','','all'),
+    d('pln','Safety Management Plan – Cooktown Botanic Gardens','Management Plan','In Review','','dept',['Botanic Gardens','Parks & Gardens']),
+    d('pln','Construction WHS Management Plan Template','Management Plan','Draft','','dept',['Works','Infrastructure']),
+
+    // Management Procedures (Manual s5,7,8,9,10,11,12,29)
+    d('mgm','WHS Procedure – Leadership and Responsibilities','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – Roles and Responsibilities','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – Governance & Legal Requirements','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – WHS Objectives, Planning & Resourcing','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – Safety Personnel & WHS Committee','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – Consultation, Participation & Representation','Procedure','In Review','','all'),
+    d('mgm','WHS Procedure – Safety by Design','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – Continuous Improvement','Procedure','In Review','','all'),
+    d('mgm','WHS Procedure – Management of Change','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – Management Reviews','Procedure','Draft','','all'),
+    d('mgm','WHS Committee Terms of Reference','Procedure','In Review','','all'),
+
+    // Operational Procedures (Manual s13-18,21,24-28,30,31)
+    d('ops','WHS Procedure – Risk Management','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Psychosocial Risk Management','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Occupational Violence, Bullying & Harassment','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Fatigue Risk Management','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Fitness for Work / Alcohol & Other Drugs','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Information, Training and Supervision','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Contractor Management','Procedure','In Review','','all'),
+    d('ops','WHS Procedure – Incident and Hazard Reporting & Investigation','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Injury Management, Stay at Work & Rehabilitation','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Inspection, Monitoring and Auditing','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Stop Work Notifications','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Safety Issue Resolution','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Safety Breaches and Misconduct','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Record Keeping Requirements','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Document Management System','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Safe Work in Hot Conditions','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Remote & Isolated Work','Procedure','Draft','','dept',['Infrastructure','Works','Environmental Health']),
+    d('ops','WHS Procedure – Responding to Unreasonable Customer Contact','Procedure','Draft','','dept',['Executive','People & Performance']),
+    d('ops','WHS Procedure – First Aid Management','Procedure','Draft','','all'),
+
+    // Emergency Management (Manual s22,23)
+    d('emg','WHS Procedure – Emergency Management & First Aid','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Fire','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Chemical Spill & Hazardous Conditions','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Essential Services Failure (Electrical)','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Bomb Threat','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Personal/Security Threat & Lock Down','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Evacuation Procedures','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Medical Emergency','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Remote Medical Emergency','Emergency Plan','Draft','','dept',['Infrastructure','Works','Environmental Health']),
+    d('emg','Emergency Response – Non Breathing Swimmer','Emergency Plan','In Review','','dept',['Aquatic Centre']),
+    d('emg','Emergency Response – Risk of Drowning','Emergency Plan','Draft','','dept',['Aquatic Centre']),
+    d('emg','Cooktown Swimming Pool Emergency Management Plan 2025','Emergency Plan','In Review','','dept',['Aquatic Centre']),
+    d('emg','WHS Tool – Emergency Management Communications & Response Kit','Tool','Draft','','all'),
+
+    // Operations Management – Facilities (Manual s19.1–19.22)
+    d('opm-fac','Amenities, Kitchen & Dining Facilities Guidelines','Guideline','Active','','all'),
+    d('opm-fac','Drinking Water & Sanitation Guidelines','Guideline','Active','','all'),
+    d('opm-fac','Accommodation Safety Guidelines (General)','Guideline','Active','','all'),
+    d('opm-fac','Airport & Aerodrome Safety Guidelines','Guideline','Active','','dept',['Infrastructure','Works']),
+    d('opm-fac','Animal Control Safety Guidelines','Guideline','Active','','dept',['Environmental Health']),
+
+    // Operations Management – Construction (Manual s19.53–19.69)
+    d('opm-constr','Construction & Civil Works Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','High Risk Construction Work Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','Working at Heights Guidelines','Guideline','Active','','dept',['Works','Infrastructure','Parks & Gardens']),
+    d('opm-constr','Trenching & Excavation Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','Confined Space Entry Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','Asbestos Management Guidelines','Guideline','Active','','all'),
+
+    // Operations Management – Hazardous Substances (Manual s19.70–19.83)
+    d('opm-chem','Chemicals & Hazardous Substances Management Guidelines','Guideline','Active','','all'),
+    d('opm-chem','Chemical Register & SDS Management','Guideline','Active','','all'),
+    d('opm-chem','Biohazard & Infection Control Guidelines','Guideline','Active','','all'),
+
+    // Operations Management – Electrical (Manual s19.85–19.97)
+    d('opm-elec','Electrical Safety Guidelines','Guideline','Active','','all'),
+    d('opm-elec','Electrical Permit to Work & Isolation Guidelines','Guideline','Active','','dept',['Works','Infrastructure','IT']),
+    d('opm-elec','Portable Electrical Equipment & Test and Tag Guidelines','Guideline','Active','','all'),
+
+    // Operations Management – Environmental (Manual s20.1–20.17)
+    d('opm-env','Environmental Management Guidelines','Guideline','Active','','all'),
+    d('opm-env','Flora & Fauna Protection Guidelines','Guideline','Active','','dept',['Environmental Health','Parks & Gardens']),
+    d('opm-env','Waterway & Erosion Protection Guidelines','Guideline','Active','','dept',['Works','Environmental Health']),
+    d('opm-env','Water & Waste Management Guidelines','Guideline','Active','','dept',['Works','Environmental Health']),
+
+    // Operations Management – People & Wellbeing (Manual s14–17,20.35,20.47)
+    d('opm-ppl','Heat Management & Heat Illness Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Psychosocial & Mental Health Support Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Fatigue Risk Management Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Infection Control & COVID-19 Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Remote & Isolated Lone Work Guidelines','Guideline','Active','','dept',['Infrastructure','Works','Environmental Health']),
+    d('opm-ppl','Occupational Hygiene & Health Monitoring Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Driving for Work Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Computer Use, Ergonomics & Cyber Safety Guidelines','Guideline','Active','','all'),
+
+    // Operations Management – Plant & Equipment (Manual s20.60–20.92)
+    d('opm-plant','Lifting Plant & Operations Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-plant','Plant & Equipment Safety Guidelines','Guideline','Active','','all'),
+    d('opm-plant','Mechanical Workshop Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-plant','Hot Works & Welding Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-plant','Marine Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+
+    // Operations Management – Site Operations (Manual s20.19–20.34, s20.96–20.103)
+    d('opm-site','Fuel & Gas (Compressed Cylinders) Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-site','Procurement, Goods & Services Safety Guidelines','Guideline','Active','','all'),
+    d('opm-site','Food Safety Guidelines','Guideline','Active','','dept',['Aquatic Centre','Botanic Gardens']),
+    d('opm-site','Security Management Guidelines','Guideline','Active','','all'),
+    d('opm-site','Workforce Whereabouts & Missing Worker Guidelines','Guideline','Active','','all'),
+
+    // Safe Work Procedures
+    d('swp','SWP – Remote & Isolated Travel (General)','Safe Work Procedure','Approved','','dept',['Infrastructure','Works','Environmental Health']),
+    d('swp','SWP – Working in Hot Conditions','Safe Work Procedure','Draft','','all'),
+    d('swp','SWP – Working Alone','Safe Work Procedure','Draft','','dept',['Infrastructure','Works','Environmental Health']),
+    d('swp','SWP – Manual Handling','Safe Work Procedure','Draft','','all'),
+    d('swp','SWP – Working at Height','Safe Work Procedure','Draft','','dept',['Works','Infrastructure','Parks & Gardens']),
+    d('swp','SWP – Driving for Work','Safe Work Procedure','Draft','','all'),
+    d('swp','SWP – Confined Space Entry','Safe Work Procedure','Draft','','dept',['Works','Infrastructure']),
+
+    // SWMS
+    d('swms','SWMS – Causeway Installation','SWMS','Draft','','dept',['Works','Infrastructure']),
+    d('swms','SWMS – Delivery, Erection & Dismantling of Formwork','SWMS','Draft','','dept',['Works']),
+    d('swms','SWMS – Tree Removal','SWMS','Draft','','dept',['Parks & Gardens']),
+    d('swms','SWMS – Excavation Works','SWMS','Draft','','dept',['Works','Infrastructure']),
+
+    // SOPs
+    d('sop','SOP – Start of Day Process (Botanic Gardens)','SOP','Approved','','dept',['Botanic Gardens']),
+    d('sop','SOP – Manual Handling (Botanic Gardens)','SOP','Draft','','dept',['Botanic Gardens','Parks & Gardens']),
+    d('sop','SOP – PPE Management (Botanic Gardens)','SOP','Draft','','dept',['Botanic Gardens']),
+    d('sop','SOP – Emergency Response (Botanic Gardens)','SOP','Draft','','dept',['Botanic Gardens']),
+    d('sop','SOP – Barricades','SOP','Draft','','dept',['Works','Infrastructure']),
+    d('sop','SOP – Utility & Sedan Vehicles','SOP','Draft','','dept',['Works','Infrastructure','Environmental Health']),
+    d('sop','SOP – Pool Chemical Handling','SOP','Draft','','dept',['Aquatic Centre']),
+
+    // Forms
+    d('forms','WHS Risk Assessment Form','Form','Approved','','all'),
+    d('forms','SWMS Review Checklist','Form','Approved','','all'),
+    d('forms','Incident Notification Form','Form','Draft','','all'),
+    d('forms','Hazard Report Form','Form','Draft','','all'),
+    d('forms','Emergency Evacuation Record','Form','Draft','','all'),
+    d('forms','Return to Work Plan Form','Form','Draft','','all'),
+    d('forms','Contractor Induction Checklist','Form','In Review','','all'),
+    d('forms','Pre-Start Safety Checklist','Form','Draft','','all'),
+    d('forms','Fit for Work Declaration','Form','Draft','','all'),
+    d('forms','First Aid Record Form','Form','Draft','','all'),
+    d('forms','Electrical Permit to Work Form','Form','Draft','','dept',['Works','Infrastructure']),
+    d('forms','Confined Space Entry Permit','Form','Draft','','dept',['Works','Infrastructure']),
+    d('forms','Hot Works Permit','Form','Draft','','dept',['Works','Infrastructure']),
+    d('forms','Remote Travel Journey Management Form','Form','Draft','','dept',['Infrastructure','Works','Environmental Health']),
+    d('forms','Psychosocial Risk Assessment Form','Form','Draft','','all'),
+
+    // Registers
+    d('reg','Hazard and Risk Register','Register','Draft','','all'),
+    d('reg','Continuous Improvement Register','Register','Pending','','all'),
+    d('reg','Incident Register','Register','Draft','','all'),
+    d('reg','Contractor Register','Register','Draft','','all'),
+    d('reg','Competency Matrix','Register','Draft','','all'),
+    d('reg','Training Register','Register','Draft','','all'),
+    d('reg','First Aid Equipment Register','Register','Draft','','all'),
+    d('reg','Chemical Register','Register','Active','','all'),
+    d('reg','Plant & Equipment Register','Register','Active','','all'),
+    d('reg','Asbestos Register','Register','Active','','all'),
+    d('reg','WHS Calendar / Schedule','Register','Draft','','all'),
+
+    // Templates
+    d('tmpl','WHS Risk Assessment Template','Template','Approved','','all'),
+    d('tmpl','WHS Remote & Isolated Work Plan Template','Template','Draft','','all'),
+    d('tmpl','Public Event Emergency Plan Template','Template','Draft','','all'),
+    d('tmpl','Monthly Action Plans (MAPs) Template','Template','In Review','','all'),
+    d('tmpl','WHS Construction Management Plan Template','Template','Draft','','all'),
+    d('tmpl','Briefing Note – Documents Requiring Signature','Template','Approved','D25/2631','all'),
+
+    // Training
+    d('trn','WHS Induction – New Employee','Training Module','Approved','','all'),
+    d('trn','Manual Handling Training Module','Training Module','Draft','','all'),
+    d('trn','Emergency Warden Training','Training Module','Draft','','all'),
+    d('trn','Contractor Safety Induction','Training Module','In Review','','all'),
+    d('trn','First Aid Refresher Program','Training Module','Draft','','dept',['Aquatic Centre','Botanic Gardens']),
+    d('trn','WHS Leadership Training – Managers & Supervisors','Training Module','Draft','','dept',['Executive','People & Performance']),
+    d('trn','Psychosocial Risk Management Training','Training Module','Draft','','dept',['Executive','People & Performance']),
+    d('trn','Confined Space Entry Training','Training Module','Draft','','dept',['Works','Infrastructure']),
+
+    // Toolbox Talks
+    d('tbx','Toolbox Talk – Heat Safety & Hydration','Toolbox Talk','Approved','','all'),
+    d('tbx','Toolbox Talk – Fatigue Management','Toolbox Talk','Approved','','all'),
+    d('tbx','Toolbox Talk – Manual Handling','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Incident & Hazard Reporting','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Remote Travel Safety','Toolbox Talk','Draft','','dept',['Infrastructure','Works','Environmental Health']),
+    d('tbx','Toolbox Talk – Working with Contractors','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Hazard ID & Near Misses','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Psychosocial Risks & Wellbeing','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Electrical Safety','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Chemical Safety & SDS','Toolbox Talk','Draft','','all'),
+
+    // Guides & Manuals
+    d('gd','WHS Legislation Guide – QLD WHS Act 2011','Guide','Active','','all'),
+    d('gd','WHS Legislation Guide – QLD WHS Regulation 2011','Guide','Active','','all'),
+    d('gd','WHS Guide – Codes of Practice (Relevant)','Guide','Active','','all'),
+    d('gd','WHS Guide – First Aid Requirements','Guide','Draft','','all'),
+    d('gd','WHS Guide – Heat Illness Prevention','Guide','Approved','','all'),
+    d('gd','WHS Guide – Psychosocial Hazards in the Workplace','Guide','Draft','','all'),
+    d('gd','Asset Manual – Aquatic Centre Plant & Equipment','Asset Manual','Active','','dept',['Aquatic Centre']),
+    d('gd','Asset Manual – Parks & Mowing Equipment','Asset Manual','Active','','dept',['Parks & Gardens','Botanic Gardens']),
+    d('gd','Asset Manual – Council Fleet Vehicles','Asset Manual','Active','','all'),
+
+    // Records
+    d('rec','WHS Committee Meeting Minutes','Record','Active','','all'),
+    d('rec','WHS Inspection Records','Record','Active','','all'),
+    d('rec','Incident Investigation Records','Record','Active','','all'),
+    d('rec','Induction & Training Completion Records','Record','Active','','all'),
+    d('rec','Audit Records – Internal WHS Audit','Record','Active','','all'),
+    d('rec','Management Review Records','Record','Active','','all'),
+
+    // Reports
+    d('rpt','WHS Monthly Status Report','Report','Draft','','all'),
+    d('rpt','WHS Quarterly Review Report','Report','Draft','','all'),
+    d('rpt','Annual WHS Performance Report','Report','Draft','','all'),
+    d('rpt','Incident Summary Report','Report','Draft','','all'),
+    d('rpt','WHS Audit Report','Report','Draft','','all'),
+  ];
+
+  // Seed links
+  const fi=t=>( DOCS.find(x=>x.title.includes(t))||{}).id;
+  const lnk=(dt,pts)=>{const x=DOCS.find(x=>x.title.includes(dt));if(x)x.links=pts.map(t=>fi(t)).filter(Boolean);};
+  lnk('Risk Assessment Form',['Risk Management','Contractor Management']);
+  lnk('SWMS Review Checklist',['Contractor Management']);
+  lnk('Incident Notification Form',['Incident and Hazard']);
+  lnk('Contractor Induction Checklist',['Contractor Management']);
+  lnk('Fit for Work Declaration',['Fitness for Work','Alcohol and Other Drugs']);
+  lnk('Return to Work Plan',['Injury Management']);
+  lnk('Emergency Evacuation Record',['Emergency Management']);
+  lnk('Pre-Start Safety',['Inspection, Monitoring']);
+  lnk('SWP – Remote',['Remote & Isolated Work']);
+  lnk('SWMS – Causeway',['Contractor Management']);
+  lnk('Remote Travel Journey Management',['Remote & Isolated Work']);
+  lnk('Electrical Permit to Work Form',['Electrical Safety']);
+  lnk('Confined Space Entry Permit',['Stop Work']);
+  lnk('Psychosocial Risk Assessment Form',['Psychosocial Risk']);
+}
+
+// ── RENDER ──────────────────────────────────────────────
+function render(){
+  SECS.forEach(sec=>{
+    const g=document.getElementById('grid-'+sec);
+    if(!g)return;
+    g.innerHTML='';
+    DOCS.filter(x=>x.sec===sec).forEach(doc=>g.appendChild(mkCard(doc)));
+    const ab=document.createElement('div');ab.className='add-card';
+    ab.innerHTML='<span class="plus">＋</span>Add';ab.onclick=()=>openAdd(sec);
+    g.appendChild(ab);
+  });
+  updateCounts();updDeptFilter();applyFilter();
+  if(curView==='conn')drawConn();
+}
+
+function mkCard(doc){
+  const card=document.createElement('div');
+  card.className='dc';card.dataset.id=doc.id;card.draggable=true;
+  const sc=SC[doc.sec]||'#475569';
+  const ico=SICN[doc.type]||'📄';
+  const stcl=STCL[doc.status]||'st-d';
+  let audH='';
+  if(doc.audience==='all')audH=`<span class="ap ap-all">👥 All Staff</span>`;
+  else if(doc.depts&&doc.depts.length){
+    audH=`<span class="ap ap-dept">🏢</span>`+doc.depts.slice(0,2).map(d=>`<span class="ap ap-dept">${d}</span>`).join('')+(doc.depts.length>2?`<span class="ap ap-dept">+${doc.depts.length-2}</span>`:'');
+  }
+  const lnkH=doc.links.map(lid=>{const ld=DOCS.find(x=>x.id===lid);if(!ld)return'';const lb=ld.title.replace(/WHS Procedure\s*[–-]\s*/,'').substring(0,26);return`<span class="lp">🔗<span>${lb}</span><span class="lpx" onclick="rmLnk('${doc.id}','${lid}',event)">✕</span></span>`;}).filter(Boolean).join('');
+  const today=new Date();today.setHours(0,0,0,0);
+  let revCls='';
+  if(doc.nextReview){const rd=new Date(doc.nextReview);const diff=(rd-today)/(1000*60*60*24);if(diff<0)revCls=' overdue';else if(diff<=30)revCls=' due-soon';}
+  const fmtD=s=>{if(!s)return'<span style="opacity:.38">Set date</span>';const p=s.split('-');return`${p[2]}/${p[1]}/${p[0]}`;};
+  const dateRow=`<div class="cdate-row">
+    <span class="cdate" onclick="openDt('${doc.id}')" data-tip="Set dates">📅 <span class="dlbl">Updated</span>&nbsp;<span class="dval">${fmtD(doc.lastUpdated)}</span></span>
+    <span class="cdate${revCls}" onclick="openDt('${doc.id}')" data-tip="Set review date">🔄 <span class="dlbl">Review</span>&nbsp;<span class="dval">${fmtD(doc.nextReview)}</span></span>
+  </div>`;
+  card.innerHTML=`
+    <div class="stripe" style="background:${sc}"></div>
+    <div class="icon-row"><span class="tyico">${ico}</span><span class="tylbl">${doc.type}</span></div>
+    <div class="ctitle" contenteditable="true" spellcheck="false"
+      onblur="renDoc('${doc.id}',this.innerText)"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
+    >${doc.title}</div>
+    ${audH?`<div class="aud-row">${audH}</div>`:''}
+    ${lnkH?`<div class="lnks">${lnkH}</div>`:''}
+    <div class="cfoot"><span class="cdno">${doc.docNo||''}</span><span class="cst ${stcl}">${doc.status}</span></div>
+    ${dateRow}
+    <div class="cacts">
+      <button class="ca aud" data-tip="Audience" onclick="openAud('${doc.id}')">👥</button>
+      <button class="ca lnk" data-tip="Link" onclick="openLnk('${doc.id}')">🔗</button>
+      <button class="ca" data-tip="Status" onclick="cycSt('${doc.id}')">⟳</button>
+      <button class="ca del" data-tip="Delete" onclick="delDoc('${doc.id}')">✕</button>
+    </div>`;
+  card.addEventListener('dragstart',e=>{dragId=doc.id;setTimeout(()=>card.classList.add('dragging'),0);e.dataTransfer.effectAllowed='move';});
+  card.addEventListener('dragend',()=>{card.classList.remove('dragging');dragId=null;});
+  return card;
+}
+
+// ── D&D ──────────────────────────────────────────────────
+function od(e,g){e.preventDefault();e.dataTransfer.dropEffect='move';g.classList.add('do');}
+function ol(e,g){if(!g.contains(e.relatedTarget))g.classList.remove('do');}
+function dp(e,g,sec){
+  e.preventDefault();g.classList.remove('do');if(!dragId)return;
+  const doc=DOCS.find(x=>x.id===dragId);if(doc)doc.sec=sec;
+  const ti='tab-'+sec;if(document.getElementById(ti))showTab(sec);
+  render();
+}
+
+// ── CRUD ─────────────────────────────────────────────────
+function renDoc(id,t){const x=DOCS.find(d=>d.id===id);if(x&&t.trim())x.title=t.trim();updateCounts();}
+function delDoc(id){DOCS=DOCS.filter(d=>d.id!==id);DOCS.forEach(d=>{d.links=d.links.filter(l=>l!==id);});render();}
+function cycSt(id){const d=DOCS.find(x=>x.id===id);if(!d)return;const i=STCY.indexOf(d.status);d.status=STCY[(i+1)%STCY.length];render();}
+function rmLnk(did,lid,e){e.stopPropagation();const d=DOCS.find(x=>x.id===did);if(d)d.links=d.links.filter(l=>l!==lid);render();}
+
+// ── ADD ───────────────────────────────────────────────────
+function openAdd(sec){
+  addTgt=sec;if(sec)document.getElementById('a-s').value=sec;
+  document.getElementById('a-t').value='';document.getElementById('a-dn').value='';
+  document.getElementById('a-lu').value='';document.getElementById('a-nr').value='';
+  document.getElementById('a-au').value='all';buildDG('a-dg',[]);tdp('a-da','all');
+  document.getElementById('m-add').classList.add('open');
+  setTimeout(()=>document.getElementById('a-t').focus(),200);
+}
+function addDoc(){
+  const t=document.getElementById('a-t').value.trim();
+  if(!t){document.getElementById('a-t').style.borderColor='red';return;}
+  document.getElementById('a-t').style.borderColor='';
+  const au=document.getElementById('a-au').value;
+  const depts=au==='dept'?getSel('a-dg'):[];
+  const sec=document.getElementById('a-s').value;
+  DOCS.push({id:uid(),sec,title:t,type:document.getElementById('a-ty').value,status:document.getElementById('a-st').value,docNo:document.getElementById('a-dn').value.trim(),links:[],audience:au,depts,lastUpdated:document.getElementById('a-lu').value,nextReview:document.getElementById('a-nr').value});
+  closeM('m-add');const ti='tab-'+sec;if(document.getElementById(ti))showTab(sec);render();
+}
+document.getElementById('a-t').addEventListener('keydown',e=>{if(e.key==='Enter')addDoc();});
+
+// ── LINK ─────────────────────────────────────────────────
+function openLnk(id){lnkTgt=id;document.getElementById('ls').value='';bpl('');document.getElementById('m-lnk').classList.add('open');}
+function bpl(f){
+  const pl=document.getElementById('pl');pl.innerHTML='';
+  const procs=DOCS.filter(x=>['mgm','ops','emg'].includes(x.sec)&&(!f||x.title.toLowerCase().includes(f.toLowerCase())));
+  if(!procs.length){pl.innerHTML='<div style="padding:12px;font-size:12px;color:#64748b">No procedures found</div>';return;}
+  const tgt=DOCS.find(x=>x.id===lnkTgt);
+  const tl={mgm:'Tier 2',ops:'Tier 3',emg:'Emergency'};
+  procs.forEach(p=>{
+    const ch=tgt&&tgt.links.includes(p.id);
+    const el=document.createElement('div');el.className='pi';el.dataset.id=p.id;
+    el.innerHTML=`<input type="checkbox" id="lx-${p.id}" ${ch?'checked':''}><label for="lx-${p.id}" class="pt" style="cursor:pointer">${p.title}</label><span class="ptier">${tl[p.sec]||''}</span>`;
+    el.onclick=e=>{if(e.target.tagName!=='INPUT'){const cb=el.querySelector('input');cb.checked=!cb.checked;}};
+    pl.appendChild(el);
+  });
+}
+function applyLnk(){
+  const d=DOCS.find(x=>x.id===lnkTgt);if(!d)return;
+  d.links=[...document.querySelectorAll('#pl input[type=checkbox]:checked')].map(c=>c.id.replace('lx-',''));
+  closeM('m-lnk');render();
+}
+
+// ── AUDIENCE ─────────────────────────────────────────────
+function openAud(id){
+  audTgt=id;const doc=DOCS.find(x=>x.id===id);if(!doc)return;
+  document.getElementById('au-t').value=doc.audience||'all';
+  buildDG('au-dg',doc.depts||[]);tdp('au-da',doc.audience||'all');
+  document.getElementById('m-aud').classList.add('open');
+}
+function applyAud(){
+  const d=DOCS.find(x=>x.id===audTgt);if(!d)return;
+  d.audience=document.getElementById('au-t').value;
+  d.depts=d.audience==='dept'?getSel('au-dg'):[];
+  closeM('m-aud');render();
+}
+function buildDG(gid,sel){
+  const g=document.getElementById(gid);g.innerHTML='';
+  DEPTS.forEach(dept=>{const c=document.createElement('div');c.className='dchip'+(sel.includes(dept)?' sel':'');c.textContent=dept;c.dataset.dept=dept;c.onclick=()=>c.classList.toggle('sel');g.appendChild(c);});
+}
+function getSel(gid){return[...document.querySelectorAll(`#${gid} .dchip.sel`)].map(c=>c.dataset.dept);}
+function tdp(aid,v){document.getElementById(aid).style.display=v==='dept'?'block':'none';}
+
+// ── DATES ─────────────────────────────────────────────────
+let dtTgt=null;
+function openDt(id){
+  dtTgt=id;const doc=DOCS.find(x=>x.id===id);if(!doc)return;
+  document.getElementById('m-dt-title').textContent=doc.title;
+  document.getElementById('dt-lu').value=doc.lastUpdated||'';
+  document.getElementById('dt-nr').value=doc.nextReview||'';
+  // Show overdue hint
+  const hint=document.getElementById('dt-hint');
+  if(doc.nextReview){const d=new Date(doc.nextReview);const today=new Date();today.setHours(0,0,0,0);const diff=Math.round((d-today)/(1000*60*60*24));
+    if(diff<0)hint.innerHTML=`<span style="color:var(--red);font-weight:700;">⚠️ Overdue by ${Math.abs(diff)} day${Math.abs(diff)!==1?'s':''}</span>`;
+    else if(diff<=30)hint.innerHTML=`<span style="color:#D97706;font-weight:700;">⏰ Due in ${diff} day${diff!==1?'s':''}</span>`;
+    else hint.textContent='';}else{hint.textContent='';}
+  document.getElementById('m-dt').classList.add('open');
+}
+function applyDt(){
+  const doc=DOCS.find(x=>x.id===dtTgt);if(!doc)return;
+  doc.lastUpdated=document.getElementById('dt-lu').value;
+  doc.nextReview=document.getElementById('dt-nr').value;
+  closeM('m-dt');render();
+}
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  const tab=document.getElementById('tab-'+id);const panel=document.getElementById('panel-'+id);
+  if(tab)tab.classList.add('on');if(panel)panel.classList.add('on');
+}
+
+// ── COUNTS ───────────────────────────────────────────────
+function updateCounts(){
+  const by={};DOCS.forEach(d=>{by[d.sec]=(by[d.sec]||0)+1;});
+  Object.entries(CNTMAP).forEach(([sec,el])=>{const n=by[sec]||0;const e=document.getElementById(el);if(e)e.textContent=n+' doc'+(n!==1?'s':'');});
+  Object.entries(NBMAP).forEach(([sec,el])=>{const e=document.getElementById(el);if(e)e.textContent=by[sec]||0;});
+  T4TABS.forEach(k=>{const e=document.getElementById('tbc-'+k);if(e)e.textContent=by[k]||0;});
+  OPMTABS.forEach(k=>{const e=document.getElementById('tbc-'+k);if(e)e.textContent=by[k]||0;});
+  let t4=T4TABS.reduce((a,k)=>a+(by[k]||0),0);
+  const ct4=document.getElementById('cnt-t4');if(ct4)ct4.textContent=t4+' docs';
+  let opm=OPMTABS.reduce((a,k)=>a+(by[k]||0),0);
+  const copm=document.getElementById('cnt-opm');if(copm)copm.textContent=opm+' guidelines';
+  const nopm=document.getElementById('nb-opm');if(nopm)nopm.textContent=opm;
+}
+
+// ── FILTER ───────────────────────────────────────────────
+function fc(q){fText=q.toLowerCase();applyFilter();}
+function fst(v){fSt=v;applyFilter();}
+function fau(v){fAu=v;applyFilter();}
+function fdp(v){fDp=v;applyFilter();}
+function applyFilter(){
+  document.querySelectorAll('.dc').forEach(card=>{
+    const doc=DOCS.find(x=>x.id===card.dataset.id);if(!doc)return;
+    const mt=!fText||doc.title.toLowerCase().includes(fText);
+    const ms=!fSt||doc.status===fSt;
+    const ma=!fAu||(fAu==='all'?doc.audience==='all':doc.audience==='dept');
+    const md=!fDp||(doc.audience==='all'||doc.depts.includes(fDp));
+    card.classList.toggle('hidden',!(mt&&ms&&ma&&md));
+  });
+}
+function updDeptFilter(){
+  const sel=document.getElementById('df');const cur=sel.value;
+  sel.innerHTML='<option value="">All Departments</option>';
+  DEPTS.forEach(dept=>{const o=document.createElement('option');o.value=dept;o.textContent=dept;if(dept===cur)o.selected=true;sel.appendChild(o);});
+  const cdf=document.getElementById('cdf');if(!cdf)return;const cc=cdf.value;
+  cdf.innerHTML='<option value="">All Departments</option>';
+  DEPTS.forEach(dept=>{const o=document.createElement('option');o.value=dept;o.textContent=dept;if(dept===cc)o.selected=true;cdf.appendChild(o);});
+}
+
+// ── VIEW ─────────────────────────────────────────────────
+function sv(v){
+  curView=v;
+  document.getElementById('v-arch').style.display=v==='arch'?'':'none';
+  document.getElementById('v-conn').style.display=v==='conn'?'':'none';
+  document.getElementById('btn-arch').className='hb '+(v==='arch'?'hb-on':'hb-g');
+  document.getElementById('btn-conn').className='hb '+(v==='conn'?'hb-on':'hb-g');
+  if(v==='conn'){bldConnProcs();drawConn();}
+}
+function bldConnProcs(){
+  const sel=document.getElementById('cpf');const cur=sel.value;
+  sel.innerHTML='<option value="">All Procedures</option>';
+  DOCS.filter(x=>['mgm','ops','emg'].includes(x.sec)).forEach(x=>{
+    const o=document.createElement('option');o.value=x.id;o.textContent=x.title.replace(/WHS Procedure\s*[–-]\s*/,'').substring(0,50);if(x.id===cur)o.selected=true;sel.appendChild(o);
+  });
+}
+
+// ── CONNECTOR MAP ────────────────────────────────────────
+function drawConn(){
+  const svg=document.getElementById('csvg');svg.innerHTML='';
+  const pf=document.getElementById('cpf').value;
+  const df=document.getElementById('cdf').value;
+  let supDocs=DOCS.filter(x=>!['mgm','ops','emg','pol'].includes(x.sec)&&x.links.length>0);
+  if(df)supDocs=supDocs.filter(x=>x.audience==='all'||x.depts.includes(df));
+  if(pf)supDocs=supDocs.filter(x=>x.links.includes(pf));
+  const usedProcIds=new Set(supDocs.flatMap(x=>x.links));
+  let procs=DOCS.filter(x=>['mgm','ops','emg'].includes(x.sec)&&usedProcIds.has(x.id));
+  if(pf)procs=procs.filter(x=>x.id===pf);
+  if(!procs.length||!supDocs.length){
+    const t=el('text',{x:420,y:180,'text-anchor':'middle',fill:'#94a3b8','font-size':'13','font-family':'Montserrat,sans-serif'});
+    t.textContent='No links defined yet – use 🔗 on cards to link forms to procedures.';
+    svg.appendChild(t);svg.setAttribute('height','260');return;
+  }
+  const PAD=36,NW=198,NH=52,PX=PAD,SX=500,PG=66,SG=62;
+  const tH=Math.max(procs.length*PG,supDocs.length*SG)+80;
+  const tW=SX+NW+PAD+30;
+  svg.setAttribute('width',tW);svg.setAttribute('height',tH);svg.setAttribute('viewBox',`0 0 ${tW} ${tH}`);
+  const defs=el('defs');
+  const mk=el('marker',{id:'arr',markerWidth:9,markerHeight:6,refX:9,refY:3,orient:'auto'});
+  mk.appendChild(el('polygon',{points:'0 0,9 3,0 6',fill:'#94a3b8'}));defs.appendChild(mk);svg.appendChild(defs);
+  const hdr=(x,txt)=>{const t=el('text',{x,y:22,'font-size':9.5,'font-weight':'700','font-family':'Montserrat,sans-serif',fill:'#64748b','letter-spacing':'2'});t.textContent=txt;svg.appendChild(t);};
+  hdr(PX,'PROCEDURES / PLANS');hdr(SX,'SUPPORTING DOCUMENTS');
+  const pY={},sY={};
+  procs.forEach((p,i)=>{pY[p.id]=PAD+32+i*PG;});
+  supDocs.forEach((d,i)=>{sY[d.id]=PAD+32+i*SG;});
+  const cg=el('g');svg.appendChild(cg);
+  supDocs.forEach(doc=>{
+    doc.links.forEach(lid=>{
+      const py=pY[lid];const dy=sY[doc.id];if(py===undefined||dy===undefined)return;
+      const x1=PX+NW,y1=py+NH/2,x2=SX,y2=dy+NH/2,cx=(x1+x2)/2;
+      const p=el('path',{d:`M${x1} ${y1} C${cx} ${y1},${cx} ${y2},${x2} ${y2}`,stroke:'#CBD5E1',fill:'none','stroke-width':'1.5','marker-end':'url(#arr)'});
+      p.dataset.proc=lid;p.dataset.doc=doc.id;cg.appendChild(p);
+    });
+  });
+  const TCOL={mgm:'#0D2B4E',ops:'#1A5C9A',emg:'#991B1B',pln:'#4338CA'};
+  procs.forEach(p=>{
+    const y=pY[p.id];const cl=TCOL[p.sec]||'#0D2B4E';
+    const g=el('g',{class:'cnode','data-id':p.id});g.onclick=()=>hlNode(p.id);
+    g.appendChild(el('rect',{x:PX,y,width:NW,height:NH,rx:7,fill:cl}));
+    const lb=p.title.replace(/WHS Procedure\s*[–-]\s*/,'');
+    wrapT(lb,26).forEach((ln,i)=>{const t=el('text',{x:PX+9,y:y+16+i*13,'font-size':9.5,'font-family':'Montserrat,sans-serif','font-weight':'700',fill:'#fff'});t.textContent=ln;g.appendChild(t);});
+    const tl={mgm:'Tier 2',ops:'Tier 3',emg:'Emergency',pln:'Plan'}[p.sec]||'';
+    g.appendChild(el('rect',{x:PX+NW-54,y:y+NH-16,width:46,height:12,rx:6,fill:'rgba(255,255,255,.18)'}));
+    const tt=el('text',{x:PX+NW-31,y:y+NH-7,'font-size':7.5,'font-family':'Montserrat,sans-serif','font-weight':'700',fill:'rgba(255,255,255,.85)','text-anchor':'middle'});tt.textContent=tl;g.appendChild(tt);
+    svg.appendChild(g);
+  });
+  supDocs.forEach(doc=>{
+    const y=sY[doc.id];const cl=SC[doc.sec]||'#475569';
+    const g=el('g',{class:'cnode','data-id':doc.id});g.onclick=()=>hlNode(doc.id);
+    g.appendChild(el('rect',{x:SX,y,width:NW,height:NH,rx:7,fill:'#fff',stroke:cl,'stroke-width':'2'}));
+    g.appendChild(el('rect',{x:SX,y,width:4,height:NH,rx:2,fill:cl}));
+    const ico=SICN[doc.type]||'📄';
+    const it=el('text',{x:SX+12,y:y+21,'font-size':13});it.textContent=ico;g.appendChild(it);
+    wrapT(doc.title,26).forEach((ln,i)=>{const t=el('text',{x:SX+30,y:y+15+i*12,'font-size':9.5,'font-family':'Montserrat,sans-serif','font-weight':'700',fill:'#0D2B4E'});t.textContent=ln;g.appendChild(t);});
+    const aut=el('text',{x:SX+30,y:y+NH-7,'font-size':8,'font-family':'Source Sans 3,sans-serif',fill:'#64748b'});
+    aut.textContent=doc.audience==='all'?'👥 All Staff':'🏢 '+doc.depts.slice(0,2).join(', ')+(doc.depts.length>2?'…':'');
+    g.appendChild(aut);svg.appendChild(g);
+  });
+}
+function hlNode(id){
+  document.querySelectorAll('#csvg .cnode').forEach(g=>{g.style.opacity='';});
+  document.querySelectorAll('#csvg path').forEach(p=>{p.setAttribute('stroke','#CBD5E1');p.setAttribute('stroke-width','1.5');});
+  const conn=new Set([id]);
+  document.querySelectorAll('#csvg path').forEach(p=>{
+    if(p.dataset.proc===id||p.dataset.doc===id){p.setAttribute('stroke','#E8A020');p.setAttribute('stroke-width','2.5');conn.add(p.dataset.proc);conn.add(p.dataset.doc);}
+  });
+  document.querySelectorAll('#csvg .cnode').forEach(g=>{g.style.opacity=conn.has(g.dataset.id)?'1':'0.25';});
+}
+function el(tag,attrs={}){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e;}
+function wrapT(text,max){const w=text.split(' ');const ls=[];let ln='';w.forEach(wd=>{if((ln+' '+wd).trim().length<=max){ln=(ln+' '+wd).trim();}else{if(ln)ls.push(ln);ln=wd;}});if(ln)ls.push(ln);return ls.slice(0,3);}
+
+// ── UTILS ────────────────────────────────────────────────
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function cov(e,id){if(e.target===document.getElementById(id))closeM(id);}
+function exportJSON(){const b=new Blob([JSON.stringify(DOCS,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='CSC_WHS_Architecture.json';a.click();URL.revokeObjectURL(u);}
+
+// ── GITHUB DB ────────────────────────────────────────────
+const GH_OWNER='Jsolersafety';
+const GH_REPO='csc-whs-architecture';
+const GH_FILE='data.json';
+const GH_API=`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+let ghSha=null;        // current file SHA (needed for updates)
+let saveTimer=null;    // debounce handle
+
+function getToken(){return localStorage.getItem('gh_pat')||'';}
+
+function setPill(state,msg){
+  const p=document.getElementById('save-pill');
+  p.className='save-pill '+state;
+  p.innerHTML={
+    idle:'☁️ '+msg,
+    saving:'<span class="spin">⏳</span> '+msg,
+    saved:'✅ '+msg,
+    error:'⚠️ '+msg+' — click ⚙️',
+    notoken:'🔑 '+msg
+  }[state]||msg;
+}
+
+// Load data from GitHub on startup
+async function ghLoad(){
+  const tok=getToken();
+  if(!tok){setPill('notoken','Add token to sync');seed();render();return;}
+  setPill('saving','Loading…');
+  try{
+    const r=await fetch(GH_API,{headers:{Authorization:'token '+tok,'Accept':'application/vnd.github.v3+json'}});
+    if(r.status===404){
+      // File doesn't exist yet — use seed data and save it
+      setPill('saving','First run — saving seed data…');
+      seed();await ghSave(true);return;
+    }
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    ghSha=j.sha;
+    const decoded=JSON.parse(atob(j.content.replace(/\n/g,'')));
+    if(Array.isArray(decoded)&&decoded.length>0){
+      DOCS=decoded;
+    }else{
+      seed();
+    }
+    render();
+    setPill('saved','Loaded from GitHub');
+    setTimeout(()=>setPill('idle','Auto-save on'),3000);
+  }catch(e){
+    console.error('ghLoad',e);
+    setPill('error','Load failed');
+    seed();render();
+  }
+}
+
+// Save data to GitHub
+async function ghSave(isInit=false){
+  const tok=getToken();
+  if(!tok){setPill('notoken','Add token to sync');return;}
+  setPill('saving','Saving…');
+  const content=btoa(unescape(encodeURIComponent(JSON.stringify(DOCS,null,2))));
+  const body={message:isInit?'Initial WHS data':'Update WHS architecture data',content};
+  if(ghSha)body.sha=ghSha;
+  try{
+    const r=await fetch(GH_API,{method:'PUT',headers:{Authorization:'token '+tok,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.json();throw new Error(e.message||'HTTP '+r.status);}
+    const j=await r.json();
+    ghSha=j.content.sha;
+    setPill('saved','Saved ✓');
+    setTimeout(()=>setPill('idle','Auto-save on'),2500);
+  }catch(e){
+    console.error('ghSave',e);
+    setPill('error','Save failed');
+  }
+}
+
+// Debounced auto-save — fires 1.5s after last change
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>ghSave(),1500);
+}
+
+// Patch render() to trigger auto-save after every change
+const _render=render;
+function render(){_render();scheduleSave();}
+
+// ── GITHUB SETTINGS ──────────────────────────────────────
+function openSettings(){
+  const tok=getToken();
+  document.getElementById('gh-token').value=tok;
+  document.getElementById('gh-status').textContent=tok?'Token loaded from browser storage.':'No token saved yet.';
+  document.getElementById('m-gh').classList.add('open');
+}
+async function saveToken(){
+  const tok=document.getElementById('gh-token').value.trim();
+  if(!tok){document.getElementById('gh-status').innerHTML='<span style="color:var(--red)">Please enter a token.</span>';return;}
+  document.getElementById('gh-status').innerHTML='<span style="color:#D97706">Testing connection…</span>';
+  try{
+    const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`,{headers:{Authorization:'token '+tok}});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    localStorage.setItem('gh_pat',tok);
+    document.getElementById('gh-status').innerHTML='<span style="color:#16a34a">✅ Connected! Repo found. Data will auto-save.</span>';
+    setTimeout(()=>{closeM('m-gh');ghLoad();},1200);
+  }catch(e){
+    document.getElementById('gh-status').innerHTML=`<span style="color:var(--red)">❌ Failed: ${e.message}. Check token has <strong>repo</strong> scope.</span>`;
+  }
+}
+function clearToken(){
+  localStorage.removeItem('gh_pat');
+  ghSha=null;
+  document.getElementById('gh-token').value='';
+  document.getElementById('gh-status').innerHTML='<span style="color:var(--slate)">Token cleared.</span>';
+  setPill('notoken','Add token to sync');
+}
+
+// ── INIT ─────────────────────────────────────────────────
+ghLoad();
+</script>
+</body>
+</html>
