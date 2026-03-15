@@ -517,65 +517,75 @@ function d(sec,title,type,status,docNo='',audience='all',depts=[],lastUpdated=''
 
 function seed(){
   DOCS=[
-    // WHS Policy
-    d('pol','WHS Policy Statement','Policy','Pending'),
+    // ── WHS POLICY ──────────────────────────────────────────
+    // ⚠️ CRITICAL — overdue as of March 2025
+    d('pol','WHS Policy Statement','Policy','Pending','','all',[]),
 
-    // Administrative Policies
-    d('adm','Alcohol and Other Drugs Policy','Administrative Policy','Draft','','all'),
+    // ── ADMINISTRATIVE POLICIES ──────────────────────────────
+    d('adm','Alcohol and Other Drugs (AOD) Policy','Administrative Policy','Draft','','all'),
     d('adm','Managing Unreasonable Customer Conduct Policy','Administrative Policy','Draft','','all'),
     d('adm','Working with Children and Young People Policy','Administrative Policy','Draft','','all'),
     d('adm','Psychosocial Safety Policy','Administrative Policy','Draft','','all'),
     d('adm','Fatigue Management Policy','Administrative Policy','Draft','','all'),
+    d('adm','Privacy Policy','Administrative Policy','Active','','all'),
 
-    // Management Plans
-    d('pln','WHS Management System Manual v6 2025','Management Plan','Active','D25/5352','all'),
-    d('pln','WHS Safety Objectives, Targets and Plans','Management Plan','Draft','','all'),
+    // ── MANAGEMENT PLANS ────────────────────────────────────
+    d('pln','CSC WHSMS Manual v6 2025','Management Plan','Active','D25/5352','all'),
+    d('pln','CSC WHS SMS Implementation Plan (Tracker)','Management Plan','Active','','all'),
+    d('pln','WHS Safety Objectives, Targets & Plans','Management Plan','Draft','','all'),
     d('pln','WHS Infrastructure and Supports Plan','Management Plan','Draft','','all'),
+    d('pln','Safety Management Plan – Cooktown Botanic Gardens & Gallop Reserve v5.0','Management Plan','Active','','dept',['Botanic Gardens','Parks & Gardens']),
     d('pln','Environmental Management Plan','Management Plan','Draft','','all'),
-    d('pln','Safety Management Plan – Cooktown Botanic Gardens','Management Plan','In Review','','dept',['Botanic Gardens','Parks & Gardens']),
-    d('pln','Construction WHS Management Plan Template','Management Plan','Draft','','dept',['Works','Infrastructure']),
+    d('pln','Construction WHS Management Plan (Template)','Management Plan','Draft','','dept',['Works','Infrastructure']),
 
-    // Management Procedures (Manual s5,7,8,9,10,11,12,29)
-    d('mgm','WHS Procedure – Leadership and Responsibilities','Procedure','Draft','','all'),
+    // ── MANAGEMENT PROCEDURES (Manual §5–12, §29) ────────────
+    d('mgm','WHS Procedure – Leadership and Commitment','Procedure','Draft','','all'),
     d('mgm','WHS Procedure – Roles and Responsibilities','Procedure','Draft','','all'),
-    d('mgm','WHS Procedure – Governance & Legal Requirements','Procedure','Draft','','all'),
+    d('mgm','WHS Procedure – Governance & Legal Obligations','Procedure','Draft','','all'),
     d('mgm','WHS Procedure – WHS Objectives, Planning & Resourcing','Procedure','Draft','','all'),
     d('mgm','WHS Procedure – Safety Personnel & WHS Committee','Procedure','Draft','','all'),
+    // ✅ Draft received — awaiting CM10 registration & approval
     d('mgm','WHS Procedure – Consultation, Participation & Representation','Procedure','In Review','','all'),
     d('mgm','WHS Procedure – Safety by Design','Procedure','Draft','','all'),
+    // ✅ Draft received — blocked: CI Register & WHS Calendar not yet in CM10
     d('mgm','WHS Procedure – Continuous Improvement','Procedure','In Review','','all'),
     d('mgm','WHS Procedure – Management of Change','Procedure','Draft','','all'),
     d('mgm','WHS Procedure – Management Reviews','Procedure','Draft','','all'),
-    d('mgm','WHS Committee Terms of Reference','Procedure','In Review','','all'),
+    // ⚠️ In review — not yet uploaded to CM10
+    d('mgm','WHS Committee – Terms of Reference','Procedure','In Review','','all'),
 
-    // Operational Procedures (Manual s13-18,21,24-28,30,31)
+    // ── OPERATIONAL PROCEDURES (Manual §13–18, §21, §24–28) ──
     d('ops','WHS Procedure – Risk Management','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Psychosocial Risk Management','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Occupational Violence, Bullying & Harassment','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Fatigue Risk Management','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Fitness for Work / Alcohol & Other Drugs','Procedure','Draft','','all'),
-    d('ops','WHS Procedure – Information, Training and Supervision','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Information, Training & Supervision','Procedure','Draft','','all'),
+    // ✅ Draft received — Contractor Monitoring table incomplete; Magiq refs to resolve
     d('ops','WHS Procedure – Contractor Management','Procedure','In Review','','all'),
-    d('ops','WHS Procedure – Incident and Hazard Reporting & Investigation','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Incident & Hazard Reporting and Investigation','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Injury Management, Stay at Work & Rehabilitation','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Inspection, Monitoring and Auditing','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Stop Work Notifications','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Safety Issue Resolution','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Safety Breaches and Misconduct','Procedure','Draft','','all'),
     d('ops','WHS Procedure – Record Keeping Requirements','Procedure','Draft','','all'),
-    d('ops','WHS Procedure – Document Management System','Procedure','Draft','','all'),
-    d('ops','WHS Procedure – Safe Work in Hot Conditions','Procedure','Draft','','all'),
-    d('ops','WHS Procedure – Remote & Isolated Work','Procedure','Draft','','dept',['Infrastructure','Works','Environmental Health']),
+    d('ops','WHS Procedure – Document Management System (CM10)','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Safe Work in Hot Conditions & Emergency Response','Procedure','Draft','','all'),
+    d('ops','WHS Procedure – Remote, Isolated & Lone Work','Procedure','Draft','','dept',['Infrastructure','Works','Environmental Health']),
     d('ops','WHS Procedure – Responding to Unreasonable Customer Contact','Procedure','Draft','','dept',['Executive','People & Performance']),
     d('ops','WHS Procedure – First Aid Management','Procedure','Draft','','all'),
+    // Corporate procedure — governs document formatting & CM10 use
+    d('ops','Procedure – Use of Council Templates & Letter Writing','Procedure','Active','D25/2631','all'),
 
-    // Emergency Management (Manual s22,23)
+    // ── EMERGENCY MANAGEMENT (Manual §22–23) ─────────────────
     d('emg','WHS Procedure – Emergency Management & First Aid','Emergency Plan','Draft','','all'),
     d('emg','Emergency Response – Fire','Emergency Plan','Draft','','all'),
     d('emg','Emergency Response – Chemical Spill & Hazardous Conditions','Emergency Plan','Draft','','all'),
     d('emg','Emergency Response – Essential Services Failure (Electrical)','Emergency Plan','Draft','','all'),
     d('emg','Emergency Response – Bomb Threat','Emergency Plan','Draft','','all'),
-    d('emg','Emergency Response – Personal/Security Threat & Lock Down','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – Personal / Security Threat & Lock Down','Emergency Plan','Draft','','all'),
+    d('emg','Emergency Response – External Emergency','Emergency Plan','Draft','','all'),
     d('emg','Emergency Response – Evacuation Procedures','Emergency Plan','Draft','','all'),
     d('emg','Emergency Response – Medical Emergency','Emergency Plan','Draft','','all'),
     d('emg','Emergency Response – Remote Medical Emergency','Emergency Plan','Draft','','dept',['Infrastructure','Works','Environmental Health']),
@@ -584,62 +594,68 @@ function seed(){
     d('emg','Cooktown Swimming Pool Emergency Management Plan 2025','Emergency Plan','In Review','','dept',['Aquatic Centre']),
     d('emg','WHS Tool – Emergency Management Communications & Response Kit','Tool','Draft','','all'),
 
-    // Operations Management – Facilities (Manual s19.1–19.22)
-    d('opm-fac','Amenities, Kitchen & Dining Facilities Guidelines','Guideline','Active','','all'),
-    d('opm-fac','Drinking Water & Sanitation Guidelines','Guideline','Active','','all'),
-    d('opm-fac','Accommodation Safety Guidelines (General)','Guideline','Active','','all'),
+    // ── OPERATIONS MANAGEMENT – FACILITIES (Manual §19.1–22) ─
+    d('opm-fac','Amenities, Kitchen & Dining Facilities – Safety Guidelines','Guideline','Active','','all'),
+    d('opm-fac','Drinking Water & Sanitation – Safety Guidelines','Guideline','Active','','all'),
+    d('opm-fac','Accommodation Safety Guidelines (General & Remote)','Guideline','Active','','all'),
     d('opm-fac','Airport & Aerodrome Safety Guidelines','Guideline','Active','','dept',['Infrastructure','Works']),
-    d('opm-fac','Animal Control Safety Guidelines','Guideline','Active','','dept',['Environmental Health']),
+    d('opm-fac','Animal Control – Safety Guidelines','Guideline','Active','','dept',['Environmental Health']),
+    d('opm-fac','Pest Management – Safety Guidelines','Guideline','Active','','dept',['Environmental Health','Works']),
 
-    // Operations Management – Construction (Manual s19.53–19.69)
-    d('opm-constr','Construction & Civil Works Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-constr','High Risk Construction Work Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-constr','Working at Heights Guidelines','Guideline','Active','','dept',['Works','Infrastructure','Parks & Gardens']),
-    d('opm-constr','Trenching & Excavation Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-constr','Confined Space Entry Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-constr','Asbestos Management Guidelines','Guideline','Active','','all'),
+    // ── OPERATIONS MANAGEMENT – CONSTRUCTION (Manual §19.53–69)
+    d('opm-constr','Construction & Civil Works – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','High Risk Construction Work – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','Working at Heights – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure','Parks & Gardens']),
+    d('opm-constr','Trenching & Excavation – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','Confined Space Entry – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-constr','Asbestos Management – Safety Guidelines','Guideline','Active','','all'),
 
-    // Operations Management – Hazardous Substances (Manual s19.70–19.83)
-    d('opm-chem','Chemicals & Hazardous Substances Management Guidelines','Guideline','Active','','all'),
-    d('opm-chem','Chemical Register & SDS Management','Guideline','Active','','all'),
-    d('opm-chem','Biohazard & Infection Control Guidelines','Guideline','Active','','all'),
+    // ── OPERATIONS MANAGEMENT – HAZARDOUS SUBSTANCES (§19.70–83)
+    d('opm-chem','Chemicals & Hazardous Substances – Management Guidelines','Guideline','Active','','all'),
+    d('opm-chem','Chemical Register & Safety Data Sheets (SDS) – Guidelines','Guideline','Active','','all'),
+    d('opm-chem','Biohazard, Infection Control & Vaccination – Guidelines','Guideline','Active','','all'),
+    d('opm-chem','COVID-19 Safety Guidelines','Guideline','Active','','all'),
 
-    // Operations Management – Electrical (Manual s19.85–19.97)
-    d('opm-elec','Electrical Safety Guidelines','Guideline','Active','','all'),
-    d('opm-elec','Electrical Permit to Work & Isolation Guidelines','Guideline','Active','','dept',['Works','Infrastructure','IT']),
-    d('opm-elec','Portable Electrical Equipment & Test and Tag Guidelines','Guideline','Active','','all'),
+    // ── OPERATIONS MANAGEMENT – ELECTRICAL (Manual §19.85–97) ─
+    d('opm-elec','Electrical Safety – Guidelines','Guideline','Active','','all'),
+    d('opm-elec','Electrical Permit to Work & Isolation – Guidelines','Guideline','Active','','dept',['Works','Infrastructure','IT']),
+    d('opm-elec','Portable Electrical Equipment & Test and Tag – Guidelines','Guideline','Active','','all'),
 
-    // Operations Management – Environmental (Manual s20.1–20.17)
-    d('opm-env','Environmental Management Guidelines','Guideline','Active','','all'),
-    d('opm-env','Flora & Fauna Protection Guidelines','Guideline','Active','','dept',['Environmental Health','Parks & Gardens']),
-    d('opm-env','Waterway & Erosion Protection Guidelines','Guideline','Active','','dept',['Works','Environmental Health']),
-    d('opm-env','Water & Waste Management Guidelines','Guideline','Active','','dept',['Works','Environmental Health']),
+    // ── OPERATIONS MANAGEMENT – ENVIRONMENTAL (Manual §20.1–17) 
+    d('opm-env','Environmental Management – Guidelines','Guideline','Active','','all'),
+    d('opm-env','Flora & Fauna Protection – Guidelines','Guideline','Active','','dept',['Environmental Health','Parks & Gardens']),
+    d('opm-env','Waterway & Erosion Protection – Guidelines','Guideline','Active','','dept',['Works','Environmental Health']),
+    d('opm-env','Water & Waste Management – Guidelines','Guideline','Active','','dept',['Works','Environmental Health']),
+    d('opm-env','Contaminated Land – Safety Guidelines','Guideline','Active','','dept',['Works','Environmental Health']),
 
-    // Operations Management – People & Wellbeing (Manual s14–17,20.35,20.47)
-    d('opm-ppl','Heat Management & Heat Illness Guidelines','Guideline','Active','','all'),
-    d('opm-ppl','Psychosocial & Mental Health Support Guidelines','Guideline','Active','','all'),
-    d('opm-ppl','Fatigue Risk Management Guidelines','Guideline','Active','','all'),
-    d('opm-ppl','Infection Control & COVID-19 Guidelines','Guideline','Active','','all'),
-    d('opm-ppl','Remote & Isolated Lone Work Guidelines','Guideline','Active','','dept',['Infrastructure','Works','Environmental Health']),
-    d('opm-ppl','Occupational Hygiene & Health Monitoring Guidelines','Guideline','Active','','all'),
-    d('opm-ppl','Driving for Work Guidelines','Guideline','Active','','all'),
-    d('opm-ppl','Computer Use, Ergonomics & Cyber Safety Guidelines','Guideline','Active','','all'),
+    // ── OPERATIONS MANAGEMENT – PEOPLE & WELLBEING (§14–17, §20.35+)
+    d('opm-ppl','Heat Management & Heat Illness Prevention – Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Psychosocial Hazards & Mental Health – Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Fatigue Risk Management – Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Infection Control – Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Remote, Isolated & Lone Work – Safety Guidelines','Guideline','Active','','dept',['Infrastructure','Works','Environmental Health']),
+    d('opm-ppl','Occupational Hygiene & Health Monitoring – Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Driving for Work – Safety Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Computer Use, Ergonomics & Cyber Safety – Guidelines','Guideline','Active','','all'),
+    d('opm-ppl','Occupational Violence – Safety Guidelines','Guideline','Active','','all'),
 
-    // Operations Management – Plant & Equipment (Manual s20.60–20.92)
-    d('opm-plant','Lifting Plant & Operations Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-plant','Plant & Equipment Safety Guidelines','Guideline','Active','','all'),
-    d('opm-plant','Mechanical Workshop Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-plant','Hot Works & Welding Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-plant','Marine Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    // ── OPERATIONS MANAGEMENT – PLANT & EQUIPMENT (§20.60–92) ─
+    d('opm-plant','Lifting Plant & Operations – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-plant','Plant & Equipment – Safety Guidelines','Guideline','Active','','all'),
+    d('opm-plant','Mechanical Workshop – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-plant','Hot Works & Welding – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-plant','Marine Safety – Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
 
-    // Operations Management – Site Operations (Manual s20.19–20.34, s20.96–20.103)
-    d('opm-site','Fuel & Gas (Compressed Cylinders) Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
-    d('opm-site','Procurement, Goods & Services Safety Guidelines','Guideline','Active','','all'),
-    d('opm-site','Food Safety Guidelines','Guideline','Active','','dept',['Aquatic Centre','Botanic Gardens']),
-    d('opm-site','Security Management Guidelines','Guideline','Active','','all'),
-    d('opm-site','Workforce Whereabouts & Missing Worker Guidelines','Guideline','Active','','all'),
+    // ── OPERATIONS MANAGEMENT – SITE OPERATIONS (§20.19–34, §20.96–103)
+    d('opm-site','Fuel & Gas (Compressed Cylinders) – Safety Guidelines','Guideline','Active','','dept',['Works','Infrastructure']),
+    d('opm-site','Procurement, Goods & Services – Safety Guidelines','Guideline','Active','','all'),
+    d('opm-site','Food Safety – Guidelines','Guideline','Active','','dept',['Aquatic Centre','Botanic Gardens']),
+    d('opm-site','Security Management – Guidelines','Guideline','Active','','all'),
+    d('opm-site','Workforce Whereabouts & Missing Worker – Guidelines','Guideline','Active','','all'),
+    d('opm-site','Mobile Devices, Phones & Technology – Safety Guidelines','Guideline','Active','','all'),
 
-    // Safe Work Procedures
+    // ── SAFE WORK PROCEDURES ─────────────────────────────────
+    // ✅ Completed — Remote & Isolated Travel Risk Assessment (12/02/2026, J. Soler)
     d('swp','SWP – Remote & Isolated Travel (General)','Safe Work Procedure','Approved','','dept',['Infrastructure','Works','Environmental Health']),
     d('swp','SWP – Working in Hot Conditions','Safe Work Procedure','Draft','','all'),
     d('swp','SWP – Working Alone','Safe Work Procedure','Draft','','dept',['Infrastructure','Works','Environmental Health']),
@@ -647,61 +663,90 @@ function seed(){
     d('swp','SWP – Working at Height','Safe Work Procedure','Draft','','dept',['Works','Infrastructure','Parks & Gardens']),
     d('swp','SWP – Driving for Work','Safe Work Procedure','Draft','','all'),
     d('swp','SWP – Confined Space Entry','Safe Work Procedure','Draft','','dept',['Works','Infrastructure']),
+    d('swp','SWP – Chemical Handling','Safe Work Procedure','Draft','','all'),
+    d('swp','SWP – Electrical Safety (General)','Safe Work Procedure','Draft','','all'),
 
-    // SWMS
+    // ── SWMS ─────────────────────────────────────────────────
     d('swms','SWMS – Causeway Installation','SWMS','Draft','','dept',['Works','Infrastructure']),
     d('swms','SWMS – Delivery, Erection & Dismantling of Formwork','SWMS','Draft','','dept',['Works']),
-    d('swms','SWMS – Tree Removal','SWMS','Draft','','dept',['Parks & Gardens']),
+    d('swms','SWMS – Tree Removal & Vegetation Works','SWMS','Draft','','dept',['Parks & Gardens']),
     d('swms','SWMS – Excavation Works','SWMS','Draft','','dept',['Works','Infrastructure']),
+    d('swms','SWMS – Working at Heights','SWMS','Draft','','dept',['Works','Infrastructure']),
+    d('swms','SWMS – Confined Space Entry','SWMS','Draft','','dept',['Works','Infrastructure']),
+    d('swms','SWMS – Hot Works & Welding','SWMS','Draft','','dept',['Works','Infrastructure']),
 
-    // SOPs
+    // ── SOPs ─────────────────────────────────────────────────
+    // ✅ Approved — SOP Template V0.1 completed
     d('sop','SOP – Start of Day Process (Botanic Gardens)','SOP','Approved','','dept',['Botanic Gardens']),
     d('sop','SOP – Manual Handling (Botanic Gardens)','SOP','Draft','','dept',['Botanic Gardens','Parks & Gardens']),
     d('sop','SOP – PPE Management (Botanic Gardens)','SOP','Draft','','dept',['Botanic Gardens']),
-    d('sop','SOP – Emergency Response (Botanic Gardens)','SOP','Draft','','dept',['Botanic Gardens']),
+    d('sop','SOP – Emergency Response – Occupants & Visitors to Facilities','SOP','Draft','','all'),
     d('sop','SOP – Barricades','SOP','Draft','','dept',['Works','Infrastructure']),
     d('sop','SOP – Utility & Sedan Vehicles','SOP','Draft','','dept',['Works','Infrastructure','Environmental Health']),
     d('sop','SOP – Pool Chemical Handling','SOP','Draft','','dept',['Aquatic Centre']),
+    d('sop','SOP – Stress Management','SOP','Draft','','all'),
 
-    // Forms
-    d('forms','WHS Risk Assessment Form','Form','Approved','','all'),
-    d('forms','SWMS Review Checklist','Form','Approved','','all'),
+    // ── FORMS ────────────────────────────────────────────────
+    // ✅ Template built — WHS Risk Assessment Template
+    d('forms','WHS Risk Assessment Form / Template','Form','Approved','','all'),
+    // ✅ Produced — SWMS_Review_Checklist_CSC_v2.docx (CSC branded, landscape A4)
+    d('forms','SWMS Review Checklist (CSC v2)','Form','Approved','','all'),
     d('forms','Incident Notification Form','Form','Draft','','all'),
     d('forms','Hazard Report Form','Form','Draft','','all'),
     d('forms','Emergency Evacuation Record','Form','Draft','','all'),
     d('forms','Return to Work Plan Form','Form','Draft','','all'),
+    // ⚠️ In Review — requires CM10 register to be created first
     d('forms','Contractor Induction Checklist','Form','In Review','','all'),
     d('forms','Pre-Start Safety Checklist','Form','Draft','','all'),
     d('forms','Fit for Work Declaration','Form','Draft','','all'),
     d('forms','First Aid Record Form','Form','Draft','','all'),
     d('forms','Electrical Permit to Work Form','Form','Draft','','dept',['Works','Infrastructure']),
-    d('forms','Confined Space Entry Permit','Form','Draft','','dept',['Works','Infrastructure']),
-    d('forms','Hot Works Permit','Form','Draft','','dept',['Works','Infrastructure']),
+    d('forms','Confined Space Entry Permit Form','Form','Draft','','dept',['Works','Infrastructure']),
+    d('forms','Hot Works Permit Form','Form','Draft','','dept',['Works','Infrastructure']),
     d('forms','Remote Travel Journey Management Form','Form','Draft','','dept',['Infrastructure','Works','Environmental Health']),
     d('forms','Psychosocial Risk Assessment Form','Form','Draft','','all'),
+    d('forms','Contractor Performance Monitoring Form','Form','Draft','','all'),
+    d('forms','WHS Inspection Checklist Form','Form','Draft','','all'),
 
-    // Registers
-    d('reg','Hazard and Risk Register','Register','Draft','','all'),
+    // ── REGISTERS ────────────────────────────────────────────
+    // ⚠️ Three mandatory CM10 registers requiring IT/TRIM action
+    d('reg','Hazard and Risk Register','Register','Pending','','all'),
+    // ⚠️ Required before Continuous Improvement Procedure can be approved
     d('reg','Continuous Improvement Register','Register','Pending','','all'),
-    d('reg','Incident Register','Register','Draft','','all'),
+    d('reg','Incident Register','Register','Pending','','all'),
     d('reg','Contractor Register','Register','Draft','','all'),
-    d('reg','Competency Matrix','Register','Draft','','all'),
-    d('reg','Training Register','Register','Draft','','all'),
+    d('reg','Competency Matrix & Training Register','Register','Draft','','all'),
     d('reg','First Aid Equipment Register','Register','Draft','','all'),
     d('reg','Chemical Register','Register','Active','','all'),
     d('reg','Plant & Equipment Register','Register','Active','','all'),
     d('reg','Asbestos Register','Register','Active','','all'),
-    d('reg','WHS Calendar / Schedule','Register','Draft','','all'),
+    // ⚠️ Required before Continuous Improvement Procedure can be approved
+    d('reg','WHS Calendar / Annual Schedule','Register','Pending','','all'),
+    d('reg','Document & Version Control Register','Register','Draft','','all'),
+    d('reg','Induction & Training Completion Register','Register','Draft','','all'),
 
-    // Templates
+    // ── TEMPLATES ────────────────────────────────────────────
+    // ✅ In CM18/1259 — D18/18861
+    d('tmpl','CSC Policy Template','Template','Active','D18/18861','all'),
+    // ✅ In CM18/1259 — D19/15147
+    d('tmpl','CSC Procedure Template','Template','Active','D19/15147','all'),
+    // ✅ In CM18/1259 — D19/3129
+    d('tmpl','CSC Administrative Instruction Template','Template','Active','D19/3129','all'),
+    // ✅ Completed — WHS Risk Assessment Template (landscape)
     d('tmpl','WHS Risk Assessment Template','Template','Approved','','all'),
     d('tmpl','WHS Remote & Isolated Work Plan Template','Template','Draft','','all'),
-    d('tmpl','Public Event Emergency Plan Template','Template','Draft','','all'),
-    d('tmpl','Monthly Action Plans (MAPs) Template','Template','In Review','','all'),
-    d('tmpl','WHS Construction Management Plan Template','Template','Draft','','all'),
-    d('tmpl','Briefing Note – Documents Requiring Signature','Template','Approved','D25/2631','all'),
+    d('tmpl','Public Event Emergency Management Plan Template','Template','Draft','','all'),
+    // ⚠️ In Review — being built from 2018–2019 legacy MAPs
+    d('tmpl','SMS Monthly Action Plans (MAPs) Template','Template','In Review','','all'),
+    d('tmpl','Construction WHS Management Plan Template','Template','Draft','','all'),
+    // ✅ Briefing Note template — D18/10320
+    d('tmpl','Briefing Note – Documents Requiring Signature (v10 Feb 2026)','Template','Active','D18/10320','all'),
+    d('tmpl','Briefing Note – Matters for Consideration & Information','Template','Active','D19/17951','all'),
+    d('tmpl','Generic Contact Report Template','Template','Active','D19/571','all'),
+    d('tmpl','CSC Internal Form Template','Template','Active','D19/24208','all'),
+    d('tmpl','CSC Public Form Template','Template','Active','D19/24207','all'),
 
-    // Training
+    // ── TRAINING MATERIAL ─────────────────────────────────────
     d('trn','WHS Induction – New Employee','Training Module','Approved','','all'),
     d('trn','Manual Handling Training Module','Training Module','Draft','','all'),
     d('trn','Emergency Warden Training','Training Module','Draft','','all'),
@@ -710,63 +755,74 @@ function seed(){
     d('trn','WHS Leadership Training – Managers & Supervisors','Training Module','Draft','','dept',['Executive','People & Performance']),
     d('trn','Psychosocial Risk Management Training','Training Module','Draft','','dept',['Executive','People & Performance']),
     d('trn','Confined Space Entry Training','Training Module','Draft','','dept',['Works','Infrastructure']),
+    d('trn','Heat Safety & Hot Conditions Training','Training Module','Draft','','all'),
 
-    // Toolbox Talks
+    // ── TOOLBOX TALKS ─────────────────────────────────────────
     d('tbx','Toolbox Talk – Heat Safety & Hydration','Toolbox Talk','Approved','','all'),
     d('tbx','Toolbox Talk – Fatigue Management','Toolbox Talk','Approved','','all'),
     d('tbx','Toolbox Talk – Manual Handling','Toolbox Talk','Draft','','all'),
     d('tbx','Toolbox Talk – Incident & Hazard Reporting','Toolbox Talk','Draft','','all'),
     d('tbx','Toolbox Talk – Remote Travel Safety','Toolbox Talk','Draft','','dept',['Infrastructure','Works','Environmental Health']),
     d('tbx','Toolbox Talk – Working with Contractors','Toolbox Talk','Draft','','all'),
-    d('tbx','Toolbox Talk – Hazard ID & Near Misses','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Hazard Identification & Near Misses','Toolbox Talk','Draft','','all'),
     d('tbx','Toolbox Talk – Psychosocial Risks & Wellbeing','Toolbox Talk','Draft','','all'),
     d('tbx','Toolbox Talk – Electrical Safety','Toolbox Talk','Draft','','all'),
     d('tbx','Toolbox Talk – Chemical Safety & SDS','Toolbox Talk','Draft','','all'),
+    d('tbx','Toolbox Talk – Working at Heights','Toolbox Talk','Draft','','dept',['Works','Infrastructure','Parks & Gardens']),
 
-    // Guides & Manuals
-    d('gd','WHS Legislation Guide – QLD WHS Act 2011','Guide','Active','','all'),
-    d('gd','WHS Legislation Guide – QLD WHS Regulation 2011','Guide','Active','','all'),
-    d('gd','WHS Guide – Codes of Practice (Relevant)','Guide','Active','','all'),
-    d('gd','WHS Guide – First Aid Requirements','Guide','Draft','','all'),
-    d('gd','WHS Guide – Heat Illness Prevention','Guide','Approved','','all'),
-    d('gd','WHS Guide – Psychosocial Hazards in the Workplace','Guide','Draft','','all'),
+    // ── WHS GUIDES & ASSET MANUALS ────────────────────────────
+    d('gd','QLD WHS Act 2011 – Reference Guide','Guide','Active','','all'),
+    d('gd','QLD WHS Regulation 2011 – Reference Guide','Guide','Active','','all'),
+    d('gd','WHS Codes of Practice – Relevant COP Register','Guide','Active','','all'),
+    d('gd','First Aid Requirements – WHS Guide','Guide','Draft','','all'),
+    d('gd','Heat Illness Prevention – WHS Guide','Guide','Approved','','all'),
+    d('gd','Psychosocial Hazards in the Workplace – WHS Guide','Guide','Draft','','all'),
+    d('gd','Cheat Sheet – Styling Council Forms & Templates','Guide','Active','D21/7359','all'),
     d('gd','Asset Manual – Aquatic Centre Plant & Equipment','Asset Manual','Active','','dept',['Aquatic Centre']),
     d('gd','Asset Manual – Parks & Mowing Equipment','Asset Manual','Active','','dept',['Parks & Gardens','Botanic Gardens']),
     d('gd','Asset Manual – Council Fleet Vehicles','Asset Manual','Active','','all'),
 
-    // Records
+    // ── RECORDS ───────────────────────────────────────────────
     d('rec','WHS Committee Meeting Minutes','Record','Active','','all'),
     d('rec','WHS Inspection Records','Record','Active','','all'),
     d('rec','Incident Investigation Records','Record','Active','','all'),
     d('rec','Induction & Training Completion Records','Record','Active','','all'),
     d('rec','Audit Records – Internal WHS Audit','Record','Active','','all'),
     d('rec','Management Review Records','Record','Active','','all'),
+    d('rec','Contractor Pre-qualification Records','Record','Active','','all'),
 
-    // Reports
+    // ── REPORTS ───────────────────────────────────────────────
     d('rpt','WHS Monthly Status Report','Report','Draft','','all'),
+    d('rpt','SMS Monthly Action Plans (MAPs)','Report','Draft','','all'),
     d('rpt','WHS Quarterly Review Report','Report','Draft','','all'),
     d('rpt','Annual WHS Performance Report','Report','Draft','','all'),
     d('rpt','Incident Summary Report','Report','Draft','','all'),
-    d('rpt','WHS Audit Report','Report','Draft','','all'),
+    d('rpt','WHS Audit Report – Internal','Report','Draft','','all'),
+    d('rpt','WHS Audit Report – External','Report','Draft','','all'),
   ];
 
   // Seed links
-  const fi=t=>( DOCS.find(x=>x.title.includes(t))||{}).id;
+  const fi=t=>(DOCS.find(x=>x.title.includes(t))||{}).id;
   const lnk=(dt,pts)=>{const x=DOCS.find(x=>x.title.includes(dt));if(x)x.links=pts.map(t=>fi(t)).filter(Boolean);};
   lnk('Risk Assessment Form',['Risk Management','Contractor Management']);
   lnk('SWMS Review Checklist',['Contractor Management']);
-  lnk('Incident Notification Form',['Incident and Hazard']);
+  lnk('Incident Notification Form',['Incident & Hazard']);
   lnk('Contractor Induction Checklist',['Contractor Management']);
-  lnk('Fit for Work Declaration',['Fitness for Work','Alcohol and Other Drugs']);
+  lnk('Contractor Performance Monitoring',['Contractor Management']);
+  lnk('Fit for Work Declaration',['Fitness for Work']);
   lnk('Return to Work Plan',['Injury Management']);
   lnk('Emergency Evacuation Record',['Emergency Management']);
-  lnk('Pre-Start Safety',['Inspection, Monitoring']);
-  lnk('SWP – Remote',['Remote & Isolated Work']);
+  lnk('Pre-Start Safety Checklist',['Inspection, Monitoring']);
+  lnk('WHS Inspection Checklist',['Inspection, Monitoring']);
+  lnk('SWP – Remote',['Remote, Isolated & Lone Work']);
+  lnk('Remote Travel Journey Management',['Remote, Isolated & Lone Work']);
   lnk('SWMS – Causeway',['Contractor Management']);
-  lnk('Remote Travel Journey Management',['Remote & Isolated Work']);
   lnk('Electrical Permit to Work Form',['Electrical Safety']);
-  lnk('Confined Space Entry Permit',['Stop Work']);
-  lnk('Psychosocial Risk Assessment Form',['Psychosocial Risk']);
+  lnk('Confined Space Entry Permit',['Confined Space Entry']);
+  lnk('Hot Works Permit',['Hot Works & Welding']);
+  lnk('Psychosocial Risk Assessment',['Psychosocial Risk']);
+  lnk('Continuous Improvement Register',['Continuous Improvement']);
+  lnk('WHS Calendar',['Continuous Improvement']);
 }
 
 // ── RENDER ──────────────────────────────────────────────
