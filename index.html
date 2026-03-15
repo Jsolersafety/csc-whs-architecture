@@ -893,10 +893,10 @@ function dp(e,g,sec){
 }
 
 // ── CRUD ─────────────────────────────────────────────────
-function renDoc(id,t){const x=DOCS.find(d=>d.id===id);if(x&&t.trim())x.title=t.trim();updateCounts();}
-function delDoc(id){DOCS=DOCS.filter(d=>d.id!==id);DOCS.forEach(d=>{d.links=d.links.filter(l=>l!==id);});render();}
-function cycSt(id){const d=DOCS.find(x=>x.id===id);if(!d)return;const i=STCY.indexOf(d.status);d.status=STCY[(i+1)%STCY.length];render();}
-function rmLnk(did,lid,e){e.stopPropagation();const d=DOCS.find(x=>x.id===did);if(d)d.links=d.links.filter(l=>l!==lid);render();}
+function renDoc(id,t){const x=DOCS.find(d=>d.id===id);if(x&&t.trim()){x.title=t.trim();scheduleSave();}updateCounts();}
+function delDoc(id){DOCS=DOCS.filter(d=>d.id!==id);DOCS.forEach(d=>{d.links=d.links.filter(l=>l!==id);});render();scheduleSave();}
+function cycSt(id){const d=DOCS.find(x=>x.id===id);if(!d)return;const i=STCY.indexOf(d.status);d.status=STCY[(i+1)%STCY.length];render();scheduleSave();}
+function rmLnk(did,lid,e){e.stopPropagation();const d=DOCS.find(x=>x.id===did);if(d){d.links=d.links.filter(l=>l!==lid);render();scheduleSave();}}
 
 // ── ADD ───────────────────────────────────────────────────
 function openAdd(sec){
@@ -915,7 +915,7 @@ function addDoc(){
   const depts=au==='dept'?getSel('a-dg'):[];
   const sec=document.getElementById('a-s').value;
   DOCS.push({id:uid(),sec,title:t,type:document.getElementById('a-ty').value,status:document.getElementById('a-st').value,docNo:document.getElementById('a-dn').value.trim(),links:[],audience:au,depts,lastUpdated:document.getElementById('a-lu').value,nextReview:document.getElementById('a-nr').value});
-  closeM('m-add');const ti='tab-'+sec;if(document.getElementById(ti))showTab(sec);render();
+  closeM('m-add');const ti='tab-'+sec;if(document.getElementById(ti))showTab(sec);render();scheduleSave();
 }
 document.getElementById('a-t').addEventListener('keydown',e=>{if(e.key==='Enter')addDoc();});
 
@@ -938,7 +938,7 @@ function bpl(f){
 function applyLnk(){
   const d=DOCS.find(x=>x.id===lnkTgt);if(!d)return;
   d.links=[...document.querySelectorAll('#pl input[type=checkbox]:checked')].map(c=>c.id.replace('lx-',''));
-  closeM('m-lnk');render();
+  closeM('m-lnk');render();scheduleSave();
 }
 
 // ── AUDIENCE ─────────────────────────────────────────────
@@ -952,7 +952,7 @@ function applyAud(){
   const d=DOCS.find(x=>x.id===audTgt);if(!d)return;
   d.audience=document.getElementById('au-t').value;
   d.depts=d.audience==='dept'?getSel('au-dg'):[];
-  closeM('m-aud');render();
+  closeM('m-aud');render();scheduleSave();
 }
 function buildDG(gid,sel){
   const g=document.getElementById(gid);g.innerHTML='';
@@ -980,7 +980,7 @@ function applyDt(){
   const doc=DOCS.find(x=>x.id===dtTgt);if(!doc)return;
   doc.lastUpdated=document.getElementById('dt-lu').value;
   doc.nextReview=document.getElementById('dt-nr').value;
-  closeM('m-dt');render();
+  closeM('m-dt');render();scheduleSave();
 }
 function showTab(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
@@ -1203,10 +1203,6 @@ function scheduleSave(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>ghSave(),1500);
 }
-
-// Patch render() to trigger auto-save after every change
-const _render=render;
-function render(){_render();scheduleSave();}
 
 // ── GITHUB SETTINGS ──────────────────────────────────────
 function openSettings(){
