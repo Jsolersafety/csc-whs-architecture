@@ -1164,7 +1164,8 @@ async function ghLoad(){
     if(Array.isArray(decoded)&&decoded.length>0){
       DOCS=decoded;
     }else{
-      seed();
+      // File exists but is empty — load seed data and save it up
+      seed();await ghSave(true);return;
     }
     render();
     setPill('saved','Loaded from GitHub');
